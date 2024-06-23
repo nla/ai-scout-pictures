@@ -16,7 +16,7 @@ HarvestAndLoadPictures has a main thread that finds images in Blacklight.  This 
 
 ## Web server
 
-Typical node server.  Uses https because it makes sooky browsers complain less.  But github frets about even self-signed certs for localhost being exposed, so you'll have to recreate them yourself, something like:
+Typical node server.  Uses https because it makes sooky browsers complain less.  But github frets about even self-signed certs being exposed, so you'll have to recreate them yourself, something like:
 
 ```
 (base) kfitch@hinton:~/pictures/web$ openssl genrsa -out key.pem
@@ -51,6 +51,24 @@ This creates these files:
 key.pem csr.pem cert.pem
 
 The .env file defines the TCP port the node server will listen on, and how it can find SOLR and an embedding service.  Like the load programs, it must use CLIP to create embeddings from the queries so it can search SOLR for similar embeddings.
+
+The node app was copied from an earlier newspapers demo.  The js packages I think are used are a typical set:
+
+```
+npm install express
+npm install helmet
+npm install body-parser
+npm install axios
+npm install dotenv
+npm install cookie-parser
+npm install http-errors
+npm install log4js
+npm install morgan
+npm install rotating-file-stream
+npm install ejs
+npm install moment
+npm install solr-client
+```
 
 run webserver like this
 
