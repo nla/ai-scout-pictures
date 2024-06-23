@@ -54,7 +54,6 @@ The .env file defines the TCP port the node server will listen on, and how it ca
 
 The node app was copied from an earlier newspapers demo.  The js packages I think are used are a typical set:
 
-
 ```
 npm install express
 npm install helmet
