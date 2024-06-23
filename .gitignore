@@ -7,6 +7,7 @@ clipAsAserviceLog
 *.jar
 logs
 test.jpg
+web/*.pem
 web/*.gz
 web/log-node
 web/logs/

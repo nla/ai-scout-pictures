@@ -14,7 +14,7 @@ import org.json.* ;
 // 26Mar24 -Load pictures into SOLR (harvested by Francis)
 
 // javac -cp json-20231013.jar:/home/kfitch/tools/solr-9.4.0/server/solr-webapp/webapp/WEB-INF/lib/solr-solrj-9.4.0.jar:. LoadPictures.java
-// java  -cp json-20231013.jar:/home/kfitch/tools/solr-9.4.0/server/lib/ext/*:/home/kfitch/tools/solr-9.4.0/server/solr-webapp/webapp/WEB-INF/lib/*:/home/kfitch/tools/solr-9.4.0/server/solr-webapp/webapp/WEB-INF/lib/solr-solrj-9.4.0.jar:. LoadPictures  > logs/LoadPictures1 &
+// java  -cp json-20231013.jar:/home/kfitch/tools/solr-9.4.0/server/lib/ext/*:/home/kfitch/tools/solr-9.4.0/server/solr-webapp/webapp/WEB-INF/lib/*:/home/kfitch/tools/solr-9.4.0/server/solr-webapp/webapp/WEB-INF/lib/solr-solrj-9.4.0.jar:. LoadPictures dirname > logs/LoadPictures1 &
 
 public class LoadPictures {
 

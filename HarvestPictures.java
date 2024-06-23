@@ -11,7 +11,7 @@ import org.apache.solr.common.SolrInputDocument;
 
 import org.json.* ;
  
-// 26Mar24 - Harvest pictures into blacklight catalogue
+// 26Mar24 - Harvest pictures from blacklight catalogue
 
 // javac -cp json-20231013.jar:/home/kfitch/tools/solr-9.4.0/server/solr-webapp/webapp/WEB-INF/lib/solr-solrj-9.4.0.jar:. HarvestPictures.java
 // java  -cp json-20231013.jar:/home/kfitch/tools/solr-9.4.0/server/lib/ext/*:/home/kfitch/tools/solr-9.4.0/server/solr-webapp/webapp/WEB-INF/lib/*:/home/kfitch/tools/solr-9.4.0/server/solr-webapp/webapp/WEB-INF/lib/solr-solrj-9.4.0.jar:. HarvestPictures  > logs/HarvestPictures1 &
