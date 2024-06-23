@@ -18,8 +18,9 @@ HarvestAndLoadPictures has a main thread that finds images in Blacklight.  This 
 
 Typical node server.  Uses https because it makes sooky browsers complain less.  But github frets about even self-signed certs for localhost being exposed, so you'll have to recreate them yourself, something like:
 
-`(base) kfitch@hinton:~/pictures/web$ openssl genrsa -out key.pem
-(base) kfitch@hinton:~/pictures/web$ openssl req -new -key key.pem -out csr.pem
+```
+(base) kfitch@hinton:\~/pictures/web$ openssl genrsa -out key.pem
+(base) kfitch@hinton:\~/pictures/web$ openssl req -new -key key.pem -out csr.pem
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
 What you are about to enter is what is called a Distinguished Name or a DN.
@@ -39,10 +40,11 @@ Please enter the following 'extra' attributes
 to be sent with your certificate request
 A challenge password \[\]:
 An optional company name \[\]:
-(base) kfitch@hinton:~/pictures/web$ openssl x509 -req -days 360 -in csr.pem -signkey key.pem -out cert.pem
+(base) kfitch@hinton:\~/pictures/web$ openssl x509 -req -days 360 -in csr.pem -signkey key.pem -out cert.pem
 Certificate request self-signature ok
 subject=C = AU, ST = ACT, L = Canberra, O = NLA, OU = Digital, CN = hinton.nla.gov.au, emailAddress = kfitch@nla.gov.au
-(base) kfitch@hinton:~/pictures/web$`
+(base) kfitch@hinton:\~/pictures/web$
+```
 
 This creates these files:
 
