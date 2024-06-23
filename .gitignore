@@ -1,0 +1,16 @@
+200-images-audio/
+5000/
+*.class
+HarvestAndLoadPictures.java
+clipAsAserviceLog
+*.gz
+*.jar
+logs
+test.jpg
+web/*.gz
+web/log-node
+web/logs/
+web/node_modules/
+web/service-log
+web/static/jquery*
+web/static/pics/*

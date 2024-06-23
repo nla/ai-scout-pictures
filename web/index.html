@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Security-Policy" content="script-src-attr 'self' ; script-src 'self' https://fonts.googleapis.com https://apis.google.com; style-src 'self' https://fonts.googleapis.com/ 'unsafe-inline'">
+
+        <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon-16x16.png">
+        <link rel="icon" type="image/png" href="/static/images/favicon.ico">
+
+        <link rel="stylesheet" href="/static/style/policyFairy.css" type="text/css">
+
+        <!-- script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script -->
+        <script src="/static/javascript/policyFairy.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">      
+
+        <title>NLA Policy Fairy</title>
+
+    </head>
+    <body>
+    <div style="float:right;font-size:90%;margin-top:0.8em;margin-right:1em"><a href='/'>Home</a> | <a href='/upload'>Upload</a> </div>
+    <H1 class='banner'><a href="/" style='text-decoration:none;color:#805C74'>NLA Policy Fairy</a></H1>
+    <div class="content">
+
+  
+
+ 
+  <table>
+    <tr valign='top'>
+      <td nowrap>
+        <input type='text' size='60' id='stxt' style='font-size:105%' value='' class='veryLightMauve'/>
+        <button id='searchButton' class='searchButton'><span id='searchText' class='searchText'>Search</span></button>
+      </td>
+      <td nowrap style='padding-left:1em;font-variant:small-caps'>
+        <table>
+          <tr valign="top">
+            <td>Keyword &lt;&lt;</td>
+            <td><input type='range' id='keywordScaling' min='0' max='1' step='0.025' value='0.85'   style="margin-top:0em"             
+              title='Move to the left to boost the ranking of keyword results, move to the right to boost semantic search results'> </td>
+            <td>&gt;&gt; Semantic</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr valign='top'>
+      <td colspan="2" style="font-size:80%">
+        <span style='font-variant: small-caps'>Set</span> <select id='set' name='set'><option selected='selected'>All</option><option>Building/Facilities</option><option>Collection</option><option>Donors</option><option>IT/Technology</option><option>Finance</option><option>General/Other</option><option>Pay/Personnel</option><option>Public Service</option></SELECT>
+        &nbsp;&nbsp;
+        <span style='font-variant: small-caps'>File</span> <select style='width:32em' id='filename' name='filename'><option selected='selected'>All</option><option>Breastfeeding In the Workplace Policy - Approved and Final Version.PDF</option><option>Browser support_0.docx</option><option>Child Safety & Wellbeing Policy - Linked to MyNLA.PDF</option><option>Policy PCY12 003 - Confined Space Guideline - FINAL - Linked to MyNLA.PDF</option><option>Conflict of Interest Procedures - Linked to MyNLA.PDF</option><option>Collection Deaccessioning and Disposal Policy - Approved 5.11.21.PDF</option><option>Domestic Violence Policy - Revised - Linked to MyNLA.PDF</option><option>Policy - PCY18 003 - Drug and Alcohol Policy - Linked to MyNLA.PDF</option><option>Policy 14 008 - Employee Assistance Program Procedure - Revised May 2017 - Linked to MyNLA.PDF</option><option>Enterprise Agreement 2017 to 2020 - March 2017 - Final.PDF</option><option>Policy PCY10 005 - Events & Education Policy - Guidelines for Charging for Events - 2017 - Final - Uploaded to MyNLA.PDF</option><option>Interlibrary loan policy 2021-2023 - Linked to MyNLA.PDF</option><option>Internet Acceptable Use Policy PCY 14-002 - Linked to MyNLA.PDF</option><option>Malware Management Policy PCY 13-004 - Linked to MyNLA.PDF</option><option>Use of NCA Parking Smartcards for Volunteers at the National Library - Final Linked to MyNLA.DOCX</option><option>Onsite Volunteer Program Policy PCY14 009 - Current - Linked to MyNLA.PDF</option><option>Philanthropic Gift Acceptance Policy FINAL May 2021 - Linked to MyNLA.PDF</option><option>PCY09 009 - Probation Policy - 2017 - Linked to MyNLA.PDF</option><option>NLA Procurement Policy - Linked to MyNLA.PDF</option><option>NLA Protective Security Policy and Procedures Manual update 2020 - Linked to MyNLA.PDF</option><option>Policy PCY14 001 - Public Interest Disclosure (PID) Procedure - August 2021 - for internal - Signature and Tracking.PDF</option><option>Policy PCY09 001 - Recordkeeping Policy - Linked to OurWeb.PDF</option><option>Policy - PCY11 040 - Smoke-free workplace Policy - Linked to MyNLA.PDF</option><option>Trove Content Inclusion Policy - 2014.DOCX</option><option>User Charging Policy May 2015 -Linked to Ourweb.DOCX</option><option>Venue Hire Policy - Final - Linked to MyNLA.DOCX</option></SELECT>
+      </td>
+    </tr>
+  </table>
+ 
+<div id="results">
+  
+  <center>
+    <table style="margin-top:3em">
+    <tr>
+      <td>
+      
+        <img src="/static/images/kangarooEmuA2.jpg" height="200" width="200"/>
+        
+      </td>  
+      <td>
+        <H2 style="margin-top:90px;margin-left:2em">The Policy Fairies say <I>Welcome</I></H2>
+      </td>
+    </tr>
+    </table>
+
+  </center>
+  
+
+
+  <div  style="margin-top:3em">
+  
+    <center><H2>Policy documents</H2></center>
+  
+    
+  
+    <table cellspacing=4 cellpadding=4 style="font-size:80%">
+  
+      <tr valign="top">
+        <th nowrap="y">Policy set</th>
+        <th>Title</th>
+        <th>File name</th>
+        <th nowrap="y">File size</th>
+        <th nowrap="y">Uploaded</th>
+        <th>Generated summary</th>        
+      </tr>
+      
+      <tr valign="top">
+        <td nowrap="y">Pay/Personnel</td>  
+        <td nowrap="y">
+          Breastfeeding in the workplace
+          <BR><a href="/doc/outline?filename=Breastfeeding%20In%20the%20Workplace%20Policy%20-%20Approved%20and%20Final%20Version.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Breastfeeding%20In%20the%20Workplace%20Policy%20-%20Approved%20and%20Final%20Version.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Breastfeeding In the Workplace Policy - Approved and Final Version.PDF">Breastfeeding In the Workplace Policy - Approved and Final Version.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">533,197</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-16T04:53:01.263Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia has implemented a policy to support breastfeeding in the workplace for employees, contractors, and visitors with young children. The policy aims to promote a culture that balances work and family responsibilities, improve staff retention after parental leave, and promote workplace health and wellbeing. Employees are entitled to up to one hour of paid lactation breaks per workday for the first year after returning from parental leave, and managers are expected to provide flexibility and support. The library provides designated breastfeeding rooms with necessary facilities, and visitors are allowed to breastfeed in these rooms and all public areas. <P>Breastfeeding in reading rooms is discouraged due to potential damage to collection materials, and visitors should consider proximity to collection materials while breastfeeding. The policy applies to both contractors and employees, and parental leave refers to the initial 52 weeks of maternity leave and any additional leave granted by the employer. The policy is consistent with relevant legislation and policies, and employees can seek assistance related to breastfeeding through the Australian Breastfeeding Association or their workplace's Employee Assistance Program. The policy defines breastfeeding as the act of nursing or expressing breast milk, and it includes bottle feeding as a form of breastfeeding for Library staff. </P><P>The manager or supervisor is the person an employee reports to directly and up supervises the conduct of their employment. Visitors are individuals who are not contractors or employees attending the library.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">IT/Technology</td>  
+        <td nowrap="y">
+          Browser Support
+          <BR><a href="/doc/outline?filename=Browser%20support_0.docx" class="outlineLink">outline</a>
+           <a href="/search?filename=Browser%20support_0.docx" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Browser support_0.docx">Browser support_0.docx</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">293,275</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-16T04:59:42.411Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+<P>The article outlines guidelines for determining recommended browser support for web applications. As most browsers now adhere to standards, browser support is less of a concern than in the past. However, cutting-edge visual rendering methods and functionality may not be supported in all current browsers. The article highlights the challenge of defining a baseline support for browser versions due to the rapid release cycles of auto-updating browsers, with the majority of website visitors using the latest three versions of a browser. The article includes a chart showing the browser version lifecycle for Firefox, an auto-updating browser.
+</P><P>
+</P><P>The article discusses the update frequency of different web browsers. Browsers included in annual operating system updates, such as default mobile browsers, receive major updates annually with minor updates focused on security. Browsers with low usage, like Opera, may be based on open-source code used by popular browsers like Chrome or Safari, providing some compatibility. The article emphasizes that the browser version is more crucial than the operating system it runs on, as browsers should behave similarly on different versions of the same operating system.
+</P><P>
+</P><P>The concept of progressive enhancement is employed in web development to address inconsistencies in browser support for various features. This approach ensures that the fundamental functionality of a website is accessible to all browsers, while advanced features are delivered to more recent browsers that support them. The article provides recommendations for building websites and web applications, such as supporting the latest two versions of browsers that auto-update regularly and the latest version of browsers that update annually with major operating system releases. It is crucial to analyze the target audience's specific browser requirements, review browser usage at the start of a project, and document the supported browsers within the project requirements. The article includes appendices with detailed breakdowns of browser usage for desktop, mobile, and tablet devices, as well as a resource for testing browser support for various features.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">General/Other</td>  
+        <td nowrap="y">
+          Child Safety
+          <BR><a href="/doc/outline?filename=Child%20Safety%20%26%20Wellbeing%20Policy%20-%20Linked%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Child%20Safety%20%26%20Wellbeing%20Policy%20-%20Linked%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Child Safety &amp; Wellbeing Policy - Linked to MyNLA.PDF">Child Safety &amp; Wellbeing Policy - Linked to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">360,106</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-18T06:38:41.716Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia has implemented a Child Safety and Wellbeing Policy, which aims to provide safe physical and online environments for children using the library's resources. The policy aligns with the Commonwealth Child Safety Framework and applies to parents, caregivers, teachers, library staff, contractors, and volunteers. The library recognizes the importance of ensuring that all children have access to its resources in a secure environment. The policy involves annual risk assessments, staff training, and adherence to the National Principles for Child Safe Organisations. <P>Key roles and responsibilities have been assigned, and the policy will be reviewed in 2025. The policy covers topics such as leadership, family and community involvement, equity, staff and volunteer suitability, complaint response, ongoing education and training, and physical and online safety. The policy does not apply to library materials accessible through Trove, a platform that includes content from various institutions. The library also has other policies and guidelines, including an Annual Risk Assessment for Child Safety and Wellbeing, conduct codes for library patrons, visitors, and Friends of the National Library of Australia, a privacy policy, the National Library Service Charter, the Information and Research Services Policy, and online policies for the library's website and Trove digital library. </P><P>These policies are significant and should be referred to.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">Pay/Personnel</td>  
+        <td nowrap="y">
+          Confined Spaces
+          <BR><a href="/doc/outline?filename=Policy%20PCY12%20003%20-%20Confined%20Space%20Guideline%20-%20FINAL%20-%20Linked%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Policy%20PCY12%20003%20-%20Confined%20Space%20Guideline%20-%20FINAL%20-%20Linked%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Policy PCY12 003 - Confined Space Guideline - FINAL - Linked to MyNLA.PDF">Policy PCY12 003 - Confined Space Guideline - FINAL - Linked to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">619,626</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-19T03:18:11.860Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The Confined Spaces Guideline, approved by the Corporate Management Group in 2018, is a policy document for managing health and safety risks associated with confined spaces at the National Library of Australia. It follows guidelines set out in the Work Health and Safety Act 2011 and Regulations and applies to all workers and visitors. The guideline provides definitions, procedures for implementing regulated systems for working in confined spaces, safety practices, and a central risk register. It requires the involvement of competent persons and will be reviewed in 2021. <P>A confined space entry permit is a safety measure that ensures all necessary elements of a safe system of work are in place before individuals enter confined spaces. The guideline outlines the roles and responsibilities of PCBUs, officers, facilities managers, supervisors, and workers in managing confined space risks. The guideline emphasizes the importance of pre-activity checklists, incident reports, regular monitoring, and updating of prevention programs. Warning signs and security devices are required for confined spaces, and effective risk assessment involves identifying potential hazards, rating their likelihood of occurrence, and implementing control measures. </P><P>Record keeping is necessary for effective administration, identification, monitoring, and review of hazards, and PPE may be required to reduce injury depending on the specific hazards involved. The guideline defines terms such as engulfment, flammable mixtures, Lower Explosive Limit (LEL), and Upper Explosive Limit (UEL). It explains purging, the process of removing contaminants from confined spaces using inert gases. The guideline also lists related documents and confined spaces in the Library, providing their locations and drawing references. </P><P>The Hume Annexe and Hume Repository, the Library's other facilities, do not have confined spaces. Health and Safety Representatives are elected or selected workers representing the health and safety interests of their workgroup and serving as HSRs for PCBUs. The lowest explosion limit, also known as the lower explosive limit, is the lowest concentration of gases, fumes, or vapors that can ignite in the presence of an ignition source like flame or heat. 
+The article explains the meanings of 'supervisor', 'Officer', and 'PCBU' in the context of workplace safety. </P><P>A supervisor oversees an employee's work, while an Officer is a senior executive who makes significant decisions for the organization. In the library context, Officers include members of the Library Council, the Director-General, SES staff, and the Corporate Management Group or someone appointed by them. A PCBU is an entity that conducts a business or undertaking, such as an employer, corporation, association, partnership, or sole trader. The term 'reasonably practicable' refers to what is or was at a time reasonably able to be done to ensure health and safety, taking into account and weighing up all relevant matters. </P><P>The article then outlines Guideline 5 for confined spaces, which involves assessing the harm potential of hazards, considering the knowledge and available methods to eliminate or minimize risks, and evaluating the costs associated with these methods. The concept of risk is defined as the likelihood of a hazard occurring in relation to the potential harm it may cause. A standby person is responsible for monitoring confined space work, understanding the hazards inside, having rescue</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">General/Other</td>  
+        <td nowrap="y">
+          Conflict of Interest
+          <BR><a href="/doc/outline?filename=Conflict%20of%20Interest%20Procedures%20-%20Linked%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Conflict%20of%20Interest%20Procedures%20-%20Linked%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Conflict of Interest Procedures - Linked to MyNLA.PDF">Conflict of Interest Procedures - Linked to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">276,904</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-19T03:16:18.884Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The provided text is a Conflict of Interest Procedure document from the Human Resources section, approved in January 2022 and due for review in four years. It outlines procedures for managing conflicts of interest for all Library employees, contractors, and labour hire staff, who have a responsibility to avoid or manage conflicts arising from pecuniary or non-pecuniary interests. The document emphasizes the importance of active identification, disclosure, and management of conflicts as they arise, and provides guidelines for contractors and labour hire staff. Key roles and responsibilities are identified, such as the Director of Governance providing advice on procurement processes and the Director of Human Resources handling conflict of interest declarations and providing advice on recruitment activities. <P>The document provides a list of common conflict of interest situations, emphasizing the need to address each circumstance on a case-by-case basis. Employees are required to declare personal relationships or associations with colleagues or applicants to their managers, and reassignment of duties or adjustments to reporting lines may be necessary. In recruitment panels, members must disclose relationships with applicants, and decisions will be made on whether they should stand aside from the entire process or just for the particular applicant. In procurement processes, employees must disclose conflicts of interest, including potential conflicts, as early as possible, and high-value procurements require immediate engagement with the Governance section. </P><P>The document concludes with the Human Resources section being responsible for filing conflict of interest declarations, providing advice on recruitment activities, and maintaining the procedure document. The article also mentions the need for employees to disclose real or apparent conflicts of interest and for managers to discuss mitigation strategies with their staff, as well as the importance of promoting the APS Code of Conduct and requirements under the PGPA Act. The article describes two methods for resolving unresolved issues in the Library, and the document can be found on page 12 of the article. The article mentions several documents and legislation that were considered in developing these procedures.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">Collection</td>  
+        <td nowrap="y">
+          Deaccessioning and Disposal
+          <BR><a href="/doc/outline?filename=Collection%20Deaccessioning%20and%20Disposal%20Policy%20-%20Approved%205.11.21.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Collection%20Deaccessioning%20and%20Disposal%20Policy%20-%20Approved%205.11.21.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Collection Deaccessioning and Disposal Policy - Approved 5.11.21.PDF">Collection Deaccessioning and Disposal Policy - Approved 5.11.21.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">363,601</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-18T06:47:05.670Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia has implemented a policy for managing the selection, deaccessioning, and disposal of library materials. This policy applies to all collection materials and replaces previous procedures and guidelines. Its objectives include consistency, alignment with financial and asset management policies, clear approval responsibilities, decision-making criteria, compliance with legal and regulatory frameworks, and accountability through reporting. The policy defines key terms and outlines processes for deaccessioning and disposal, including principles and methods for disposal in accordance with the NLA Asset Management Policy. <P>The policy emphasizes compliance with the National Library Act 1960 and highlights the need for accountability through reporting on deaccessioning and disposals, as required by the National Collecting Institutions Legislation Amendment Act 2021. The policy also outlines guidelines for disposing of non-collection materials, with Library officials authorized to dispose of such materials based on thresholds outlined in the National Library Financial Management Authorisation 2021. Factors considered in deaccessioning decisions include alignment with the Collection Development Policy and Collecting Strategy, cultural significance, research value, monetary value, legal obligations, relationships with the Library, and risk assessment. Deaccessioning proposals require documented consultation and approval, with thresholds for approval based on the officer's classification level. </P><P>Deaccessioned materials are amended from the Library's records, and disposal methods are consistent with the NLA Asset Management Policy, aiming to achieve the best net return to the Library while being ethical. Aggregated disposal data is reported annually in the Library's annual report. The policy also addresses the deaccessioning and disposal of First Nations materials, involving additional consultation with the library's Indigenous Engagement section to ensure culturally safe and appropriate processes. Proposals for large-scale deaccessioning activities will require a risk assessment, communication plan, and discussion with the library's Accountable Authority and relevant minister. </P><P>The policy is reviewed every three years or as needed due to updates to the library's asset management policy. All library staff members are responsible for proper and appropriate deaccessioning and disposal of collection materials in accordance with the Public Governance, Performance and Accountability Act. The policy considers various documents and legislation, including the National Library Act 1960, National Collecting Institutions Legislation Amendment Act 2021, NLA Collection Development Policy, and NLA Asset Management Policy 2019. The policy's references and related documents also include the National Library Financial Management Authorisation 2021, NLA Collecting Strategy 2020-21 – 2023-24, Innovate Reconciliation Action Plan July 2020 – June 2022, and ANAO Management of the National Collections follow-on: National Library of Australia, National Film and Sound Archive. </P><P>Org 2021. The Collections Management Internal Audit Report 2020 is also referenced.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">Pay/Personnel</td>  
+        <td nowrap="y">
+          Domestic Violence
+          <BR><a href="/doc/outline?filename=Domestic%20Violence%20Policy%20-%20Revised%20-%20Linked%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Domestic%20Violence%20Policy%20-%20Revised%20-%20Linked%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Domestic Violence Policy - Revised - Linked to MyNLA.PDF">Domestic Violence Policy - Revised - Linked to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">202,511</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-18T06:31:42.189Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia has implemented a policy to address domestic and family violence, which will be reviewed in 2020. The policy aims to ensure the safety of employees and provide support to those affected by domestic or family violence, recognizing that each individual's circumstances are unique. The policy outlines available support mechanisms, including confidentiality, seeking support from managers, colleagues, and external providers, and emergency and ongoing support options. The policy encourages managers and peers to support their colleagues in a way that respects their expertise and promotes safety for themselves and their loved ones. <P>The policy also addresses perpetrators of domestic and family violence and provides support services for them. The library is committed to raising awareness, providing support, and working towards prevention, and encourages employees to seek support from the Employee Assistance Program (EAP) if they experience distress. The policy is not prescriptive but aims to provide a framework for supporting employees affected by domestic and family violence. Domestic and family violence involves various types of harm, including physical, sexual, emotional, financial, and psychological abuse, inflicted on individuals who have or have had intimate relationships or family connections. </P><P>This type of violence is a criminal offense, regardless of the circumstances or whether the victim recognizes it. The library provides various support services for employees dealing with domestic and family violence, including leave arrangements, flexible working hours, and use of office space for children. Confidentiality is crucial, and managers and HR must maintain appropriate confidentiality while discussing personal information only on a need-to-know basis. The library's Employee Assistance Program (EAP) is also available. </P><P>The article outlines indicators that suggest an employee may be experiencing domestic and family violence and ways in which managers and colleagues can provide support. The policy emphasizes the importance of discretion and confidentiality, encourages survivors to seek assistance and support services, and acknowledges that managers and colleagues may also require support. The policy addresses perpetrators of domestic and family violence, emphasizing safety and the need to consult with the Director, Human Resources Branch, for advice on how to address such behavior. The library provides support services for survivors and perpetrators and emphasizes the need to address any act of violence or harassment as unacceptable and not tolerated by the library. </P><P>The article explains how the library is dedicated to combating domestic and family violence by raising awareness, providing support, and working towards prevention. The library aims to create a safe and supportive work environment for those affected by violence, promote flexible work practices, and educate employees on the impacts of violence and how to respond effectively. The article emphasizes the importance of addressing gender inequality and challenging gender stereotypes to prevent violence against women and men. The library offers an eLearning course on violence and support for individuals affected by or at risk of violence. </P><P>The library's policy on domestic and family violence includes suggestions for creating a Personal Safety Plan, such as informing colleagues, managers, and security personnel of one's circumstances, negotiating work hours or patterns, requesting leave, arranging for incoming calls to be screened, changing work contact numbers, using a pseudonym, blocking specific email addresses, and agreeing on a process for children accompanying the individual to work. Notification protocols for late arrival or absence should also be established. The library's policy on domestic and family violence will be reviewed every three years by the Assistant Director of Human Resources or more frequently if necessary. The WH&S Manager</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">Pay/Personnel</td>  
+        <td nowrap="y">
+          Drug and Alcohol
+          <BR><a href="/doc/outline?filename=Policy%20-%20PCY18%20003%20-%20Drug%20and%20Alcohol%20Policy%20-%20Linked%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Policy%20-%20PCY18%20003%20-%20Drug%20and%20Alcohol%20Policy%20-%20Linked%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Policy - PCY18 003 - Drug and Alcohol Policy - Linked to MyNLA.PDF">Policy - PCY18 003 - Drug and Alcohol Policy - Linked to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">179,825</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-19T03:21:07.467Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia has a strict policy regarding alcohol and drug misuse or abuse in the workplace, in line with work health and safety legislation and APS values. Alcohol can only be consumed at approved locations and times, and workers are expected to maintain professional behavior and a "zero tolerance" approach when dealing with high-risk tasks. Supervisors must address any cases where a worker's consumption of alcohol or drug use affects their safety or work performance. Workers must be fit for duty and carry out their responsibilities safely. <P>The library provides advice on alcohol and drug issues and strategies for managing related safety, health, performance, and misconduct issues. Workers serving alcohol at library events must obtain an RSA certificate, and supervisors must not allow affected workers to remain in the workplace. Workers who are asked to leave due to drug or alcohol misuse may be required to provide medical evidence of fitness to return to duty, and volunteers or contractors may have their engagement with the library considered. The library's policy considers the possible impact on workers' compensation, and worker consumption of alcohol or drugs may be considered "serious and willful misconduct." The policy outlines procedures for reporting criminal activities and drug or alcohol abuse that pose immediate danger to workers or patrons, and support is offered through the Employee Assistance Program or professional diagnosis and treatment agencies. </P><P>The policy is reviewed every three years.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">Pay/Personnel</td>  
+        <td nowrap="y">
+          Employee Assistance Program
+          <BR><a href="/doc/outline?filename=Policy%2014%20008%20-%20Employee%20Assistance%20Program%20Procedure%20-%20Revised%20May%202017%20-%20Linked%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Policy%2014%20008%20-%20Employee%20Assistance%20Program%20Procedure%20-%20Revised%20May%202017%20-%20Linked%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Policy 14 008 - Employee Assistance Program Procedure - Revised May 2017 - Linked to MyNLA.PDF">Policy 14 008 - Employee Assistance Program Procedure - Revised May 2017 - Linked to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">324,497</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-18T06:44:20.635Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The Employee Assistance Program (EAP) at the National Library of Australia aims to provide confidential counseling to library staff and their immediate family members to help them manage work, personal, and family needs. The EAP is available to all library employees, and the costs for services are covered by the library. The EAP provider, Converge International, offers experienced and qualified advisors who can assist individuals with issues such as mental health, stress, anxiety, depression, difficult clients, and work-life balance. The EAP is a short-term therapy model, and each session lasts approximately one hour. <P>Confidentiality of session content is absolute, and the provider is independent of the library. The procedure outlines responsibilities for individuals, line managers, and the Assistant Director, Human Resources (Operations and Policy), and the WHS Manager in accessing and managing the EAP. Additional services such as trauma response and mediation services are also available with approval from an Assistant Director-General for the work area responsible for the expense incurred. The library encourages employees to use the EAP and provides time for accessing counseling sessions. </P><P>The procedure emphasizes monitoring for trends and issues identified in reports to determine any adjustments or interventions to the program. The EAP can be contacted through the Assistant Director, Human Resources (Operations and Policy) or the WHS Manager, and the procedure undergoes a review every three years and is subject to approval by the Assistant Director-General, Corporate Services. References include the National Library of Australia Enterprise Agreement 2017-2020, Converge International's EAP Web Portal Access, and associated policies and procedures such as the National Library of Australia WHS Policy and National Library Leave Procedure. This information can be found in section 8.1 and 11 of the Employee Assistance Program Procedure, which is part of a larger document.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">Pay/Personnel</td>  
+        <td nowrap="y">
+          Enterprise agreement 2017-2020
+          <BR><a href="/doc/outline?filename=Enterprise%20Agreement%202017%20to%202020%20-%20March%202017%20-%20Final.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Enterprise%20Agreement%202017%20to%202020%20-%20March%202017%20-%20Final.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Enterprise Agreement 2017 to 2020 - March 2017 - Final.PDF">Enterprise Agreement 2017 to 2020 - March 2017 - Final.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">611,872</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-16T04:58:33.870Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia has implemented a new employment agreement in accordance with the Fair Work Act 2009, which has been accepted by both the library and the Community and Public Sector Union (CPSU). The agreement, titled the "National Library of Australia Enterprise Agreement 2017-2020", covers various aspects such as scope, remuneration, performance management framework, working hours, and leave arrangements. It prioritizes work-life balance and a diverse workforce, providing employment flexibility, recognizing achievements, and valuing employees' professionalism, corporate knowledge, and cultural diversity. The agreement includes provisions for employee compensation, such as salary packaging, loadings for rostered employees, and salary loadings for irregular or intermittent employees. <P>The library offers a 15.4% employer contribution for superannuation, and during parental leave, employer contributions will be made for up to 52 weeks based on the previous full pay period's contribution amount. The library allows for Individual Flexibility Arrangements between the library and its employees, which can adjust certain terms of the agreement, as long as they meet the needs of both the library and the employee. The library's Performance Management Framework aims to foster a culture of high performance, provide training and development opportunities, offer timely and constructive feedback, and address unsatisfactory performance in a timely manner through feedback. The agreement includes guidelines for redundancy payments, requiring employees to have received allowances during annual leave and regular salary for Higher Duties Allowance payments during a minimum 12-month period. </P><P>The library has a dispute resolution process for disputes related to the agreement or National Employment Standards, starting with discussions between employees and supervisors/management. The library consults with potentially excess employees to consider redeployment opportunities and voluntary retrenchment. The text covers topics like coverage, duration, higher duties allowance, involuntary and voluntary redundancy, financial planning, flu vaccination, relocation, individual flexibility arrangements, remuneration, rostered employees, and time off in lieu (TOIL). The text includes definitions, consultation, dispute settlement, performance allowance, performance management framework, and delegation. </P><P>The text mentions reimbursements for books and equipment, consumables, and travel. It also covers indigenous employees and irregular or intermittent employees, including cadets and rostered employees. The library requires employee consultation and representation in major changes and other workplace matters, and recognizes the role of unions and employee representatives, who are free to choose whether to join a union, and their industrial interests will be respected and facilitated. The library has a dispute resolution process outlined in H1 of its Enterprise Agreement for 2017-2020, which includes mediation, conciliation, arbitration, and binding determination by the Fair Work Commission. </P><P>Employees must continue working during the dispute resolution process unless there is a health or safety concern, and the library may direct employees to perform other available work at the same or another workplace.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">Building/Facilities</td>  
+        <td nowrap="y">
+          Event Fees
+          <BR><a href="/doc/outline?filename=Policy%20PCY10%20005%20-%20Events%20%26%20Education%20Policy%20-%20Guidelines%20for%20Charging%20for%20Events%20-%202017%20-%20Final%20-%20Uploaded%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Policy%20PCY10%20005%20-%20Events%20%26%20Education%20Policy%20-%20Guidelines%20for%20Charging%20for%20Events%20-%202017%20-%20Final%20-%20Uploaded%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Policy PCY10 005 - Events &amp; Education Policy - Guidelines for Charging for Events - 2017 - Final - Uploaded to MyNLA.PDF">Policy PCY10 005 - Events &amp; Education Policy - Guidelines for Charging for Events - 2017 - Final - Uploaded to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">88,400</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-16T04:03:02.889Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia has established guidelines for charging public events organized by the institution. The policy aims to offer a mix of free and paid events for a broad audience, with fees covering direct costs or supporting strategic objectives. Events with catering should generally be charged, and refunds are available up to three working days before the event. Complimentary tickets may be offered to speakers, government representatives, Library Council members, and for promotional purposes. <P>National Library employees and contractors attending events for personal interest will be required to pay, but may receive discounts or waived fees for professional development opportunities or to encourage audience attendance. Exemptions from the charging policy apply to certain events. The policy principles include refunds, complimentary tickets, and staff attendance at charged events. The Provision of Library Services - User-charging Guidelines provide guidance on setting ticket prices and determining GST applicability. </P><P>The policy will be reviewed in July 2018, and references for its development include several library policies and guidelines. Related documents include staff instructions, notices, posters, and online resources available on the National Library of Australia's website.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">General/Other</td>  
+        <td nowrap="y">
+          Interlibrary loans
+          <BR><a href="/doc/outline?filename=Interlibrary%20loan%20policy%202021-2023%20-%20Linked%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Interlibrary%20loan%20policy%202021-2023%20-%20Linked%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Interlibrary loan policy 2021-2023 - Linked to MyNLA.PDF">Interlibrary loan policy 2021-2023 - Linked to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">140,892</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-18T06:24:42.203Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia provides interlibrary loan and document delivery services to both Australian and international institutions and individuals through its Copies Direct service. The library follows guidelines set by the Australian Interlibrary Resource Sharing code and NSLA Collaborative Lending Principles, prioritizing access to the national collection, preservation of the collection, facilitating access to collections elsewhere in Australia, and collaboration in library matters. The library adheres to copyright laws, license agreements, and access conditions set by donors, while respecting cultural sensitivities and providing warnings to requesters. The services operate on a cost-recovery basis, with charges and freight costs, but the library does not profit from interlibrary loan and document delivery charges. <P>The library uses a 'digital-first' approach, providing digital copies in lieu of loans whenever possible. The library is an active participant in and supporter of resource sharing protocols in Australia and implements its policy through the Digitisation Section, with availability and conditions of supply specified in service conditions for Digitisation on Demand Services to Libraries and Digitisation on Demand Services to Individuals. The policy is reviewed every two years and references the National Library Act 1960, Copyright Act 1968, National Library of Australia Corporate Plan, NSLA Collaborative Lending Principles, Australian Interlibrary Resource Sharing (ILRS) Code, and National edeposit.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">IT/Technology</td>  
+        <td nowrap="y">
+          Internet Acceptable Use
+          <BR><a href="/doc/outline?filename=Internet%20Acceptable%20Use%20Policy%20PCY%2014-002%20-%20Linked%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Internet%20Acceptable%20Use%20Policy%20PCY%2014-002%20-%20Linked%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Internet Acceptable Use Policy PCY 14-002 - Linked to MyNLA.PDF">Internet Acceptable Use Policy PCY 14-002 - Linked to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">167,127</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-18T06:34:24.123Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The Library's Internet Acceptable Use Policy, approved in August 2021 and set for review in June 2023, outlines expectations for staff when using online services. The policy aligns with related policies on work-related activities and IT security, covering web browsing, email use, copyright, social media, cloud services, monitoring of usage, misuse, and key roles and responsibilities. The policy aims to protect staff, patrons, and the institution's reputation by outlining expectations for staff's use of web browsing, email, social media, and other online services. Staff are encouraged to utilize these services for professional and personal purposes, both in and out of work hours, as online services are becoming increasingly important in both staff and patrons' lives. <P>The policy requires staff to uphold the Australian Public Service (APS) Values and abide by the APS Code-of-Conduct. Personal web browsing is allowed as long as it does not access inappropriate content, interfere with work performance, involve excessive downloads, or download software packages or applications. Work-related web browsing is subject to the same restrictions as personal browsing, but is allowed for professional reasons such as research or patron assistance. The policy provides guidelines for accessing online content and using the library's email system, advising staff to only access inappropriate content with supervisor approval for work-related reasons and avoid accessing content that is illegal under ACT or Commonwealth legislation. </P><P>Copyright status should be considered before downloading content to prevent violating copyright laws. Downloading software is only permitted with approval from the IT Security Advisor, except for specific groups who need it for work duties. The National Library has an Internet Acceptable Use Policy that includes guidelines for email signatures, social media usage, and cloud-based services. Official email signature blocks can be obtained from the Communications and Marketing Section, while generic ones are available on My NLA. </P><P>All official social media accounts require approval from the ADG of Engagement Branch, and the Australian Public Service's social media guidance should be followed. The use of cloud-based services is allowed as long as it doesn't violate the IT Security Policy PCY 10/056. The Library monitors all online activity conducted on their network and logs are only released outside the Library with approval from the relevant Branch head or Director-General, usually in response to a legal requirement. Direct supervisors may request access to usage logs for their staff, and IT staff may access log files to investigate technical issues or breaches. </P><P>The policy outlines examples of inappropriate use of IT resources, including sending chain letters, accessing sexually explicit or violent material, and distributing sensitive information without authorization. The policy emphasizes the responsibility of all staff to not misuse IT resources and the potential serious penalties for breaches, which may include reprimand or termination. The Director of Technology is responsible for managing the policy, and the Assistant Director, who is the cybersecurity expert, is responsible for implementing approved IT security policies and managing associated technical arrangements. The policy should be reviewed at least every two years by Technology Operations.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">General/Other</td>  
+        <td nowrap="y">
+          Malware management
+          <BR><a href="/doc/outline?filename=Malware%20Management%20Policy%20PCY%2013-004%20-%20Linked%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Malware%20Management%20Policy%20PCY%2013-004%20-%20Linked%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Malware Management Policy PCY 13-004 - Linked to MyNLA.PDF">Malware Management Policy PCY 13-004 - Linked to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">141,294</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-18T06:24:05.336Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The Malware Management Policy, titled PCY13/004, has been approved and will be reviewed in June 2023. This policy outlines objectives, definitions, preventive measures, key roles and responsibilities, review, and related documents. Malware refers to any code designed to cause harm, security breaches, or damage to a system, including attack scripts, viruses, worms, Trojan horses, backdoors, and malicious active content. The policy aims to prevent the introduction of malicious code into the Library's system components due to its severe consequences for computer systems and IT infrastructures. <P>All Library personnel are responsible for taking reasonable measures to protect Library assets from virus/malware infection. The policy establishes a minimum baseline of controls, monitors systems for indicators of compromise, minimizes targeted intrusions through the ASD Essential Eight mitigation strategies, and educates Library staff on preventing malicious code infections. The policy requires staff to report all incidents to the ITSA via email, a Cyber Security Incident Form, or by contacting Digital Support. The article suggests consulting advice and tips on common security issues for non-technical computer users at a specific website. </P><P>The policy focuses on methods of malicious code distribution, including infected email attachments, contaminated external storage devices, and downloading infected software from the internet through phishing emails or free utility applications. To prevent and mitigate malware infections, antivirus/internet security software is required for the library's computers with data transfer capabilities, including Windows desktops, Apple Macintosh computers, Linux workstations, and servers. The software should be accredited and updated daily with signature-based and heuristic-based detection set to high levels. The email system is designed to prevent the transmission of malicious code, phishing and scam emails, content violating the library's internet usage policy, and uninspected encrypted content. </P><P>The library requires all computers, including virtual machines, to have antivirus software installed and functioning, with features such as tamper protection and behavior monitoring enabled. Removable media and local hard disks should be scanned regularly, and any malware detection must be reported. Non-library-owned computers cannot connect to the library's wired network without prior approval and updated antivirus software. All file systems providing ingest access points must also have approved antivirus software. </P><P>The library has a Malware Management Policy that outlines measures for preventing malware during ingestion, including scanning Windows file shares, FTP services, harvester services, and cloud-based file sharing services for viruses and malware. If compromised material is detected, the responsible collection area will decide on appropriate action based on the collection policy, which may include rejecting the material, removing the virus or malware, or placing a protective marking on the content and restricting access. The library's repository is also regularly checked for malware, and similar measures will be taken if malware is detected after initial ingestion. Windows-based computers must have application whitelisting enabled, with only approved programs allowed to run. </P><P>Linux and Mac users are exempt in their respective operating systems but must enable application whitelisting in Windows virtual machines. Servers also need an application whitelisting solution. Public computers in Reading Rooms follow staff machine policies, but are rebooted nightly, restricted from saving</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">General/Other</td>  
+        <td nowrap="y">
+          NCA Parking for Volunteers
+          <BR><a href="/doc/outline?filename=Use%20of%20NCA%20Parking%20Smartcards%20for%20Volunteers%20at%20the%20National%20Library%20-%20Final%20Linked%20to%20MyNLA.DOCX" class="outlineLink">outline</a>
+           <a href="/search?filename=Use%20of%20NCA%20Parking%20Smartcards%20for%20Volunteers%20at%20the%20National%20Library%20-%20Final%20Linked%20to%20MyNLA.DOCX" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Use of NCA Parking Smartcards for Volunteers at the National Library - Final Linked to MyNLA.DOCX">Use of NCA Parking Smartcards for Volunteers at the National Library - Final Linked to MyNLA.DOCX</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">242,372</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-19T00:59:33.249Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia (NLA) has implemented a policy for the use of National Capital Authority (NCA) parking smartcards, which will provide free parking for volunteers during their scheduled shifts. The smartcards will only be used for NLA volunteers when engaged in rostered voluntary duty in the library, and will produce a zero value ticket valid for one day when presented at designated ticket machines. Six parking spaces close to the library will be designated for volunteer use on a first-come, first-served basis, and volunteers can also park in any other available short or long stay NCA managed paid parking spaces in the Parliamentary Triangle as long as a volunteer parking ticket is displayed. The NLA security guard will issue ten tickets to volunteers at the Security Control Centre (SCC), and the SCC Shift Supervisor will allocate a ticket to a volunteer when they present their NLA security access pass. <P>The policy aims to ensure that NCA parking smartcards are used solely for NLA volunteers when on rostered duty in the library. The policy also outlines guidelines for volunteer parking, including a process for appealing parking fines during the brief period between leaving and returning to the library, and instructions for taking care of smartcards and tickets. The SCC Shift Supervisor provides a weekly report of the number of tickets issued, and the Volunteers Coordinator reviews the register monthly to ensure only on-duty volunteers receive tickets. The NCA closely monitors the number of smartcards and tickets issued, and a quarterly usage report is provided for audit and reconciliation. </P><P>The policy will be reviewed in September 2015.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">General/Other</td>  
+        <td nowrap="y">
+          Onsite Volunteer
+          <BR><a href="/doc/outline?filename=Onsite%20Volunteer%20Program%20Policy%20PCY14%20009%20-%20Current%20-%20Linked%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Onsite%20Volunteer%20Program%20Policy%20PCY14%20009%20-%20Current%20-%20Linked%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Onsite Volunteer Program Policy PCY14 009 - Current - Linked to MyNLA.PDF">Onsite Volunteer Program Policy PCY14 009 - Current - Linked to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">244,569</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-18T06:43:04.628Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+<P>The National Library of Australia has implemented a policy for managing its onsite volunteer program, which aims to align with the library's changing needs, the skills of volunteers, and relevant legislation. The policy applies to onsite volunteers who contribute to front-of-house and behind-the-scenes projects, but not digital volunteers. The policy outlines roles and responsibilities, outcomes and outputs, recruitment and selection, documentation, performance review, termination of agreements, volunteer conditions, work health and safety compliance, risk management, review and consultation, and references and related documents. The policy emphasizes the importance of providing a safe and supportive environment for volunteers and adhering to Work Health and Safety legislation. The policy sets out guidelines for volunteer hours, project commitments, and recruitment processes, with the aim of ensuring that library volunteers support the library's strategic objectives through their participation in a range of projects. The policy was approved in April 2021 and will be reviewed in April 2026.
+</P><P>
+</P><P>The library also has policies for volunteers, including background check requirements, start and end dates for volunteer agreements, adherence to the APS Values and Code of Conduct, the library's privacy policy, and work health and safety guidelines. Volunteers undergo a two-month probationary period, regular performance reviews, and may be terminated for unsatisfactory work, excessive absences, or inappropriate behavior. The library covers volunteers under its Workers Compensation Scheme for injuries or illnesses sustained while volunteering, and volunteers must sign a Statutory Declaration and undergo security checks. The library owns intellectual property created by volunteers, and volunteers are prohibited from removing library property. Volunteers must complete an induction and privacy policy, and the library's Work Health and Safety Management System should be consulted to determine how and when risks should be assessed and managed. Non-compliance with Work Health and Safety legislation or internal policies may result in the termination of a volunteer's agreement. The policy will be reviewed every five years, and the Volunteer Handbook will be revised annually or as required. The policy considers various documents and legislation, including the Model Code of Practice: How to Manage Work Health and Safety Risks and the Work Health and Safety Management System.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">Donors</td>  
+        <td nowrap="y">
+          Philanthropic Gift Acceptance
+          <BR><a href="/doc/outline?filename=Philanthropic%20Gift%20Acceptance%20Policy%20FINAL%20May%202021%20-%20Linked%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Philanthropic%20Gift%20Acceptance%20Policy%20FINAL%20May%202021%20-%20Linked%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Philanthropic Gift Acceptance Policy FINAL May 2021 - Linked to MyNLA.PDF">Philanthropic Gift Acceptance Policy FINAL May 2021 - Linked to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">325,629</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-18T06:27:48.062Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia's Philanthropic Gift Acceptance Policy outlines their approach to accepting philanthropic gifts, ensuring they align with the library's vision and mission without compromising its integrity and autonomy. The policy defines key terms and requires prior approval for soliciting certain gifts, with gifts over $50,000 being accepted by the Director-General. The library has the right to refuse or return any gift, and due diligence research is required for gifts over $50,000. The library aims to use specified gifts for their intended purpose, but may use them for other purposes with donor consultation or gift return. <P>All gifts are recorded, and donor information is maintained in the library's systems. The library recognizes donor generosity and discusses public acknowledgement and recognition in their Donor Recognition Policy. The Director is responsible for approving gifts worth $50,000 or less, with the Assistant Director also having approval authority. Library representatives cannot accept philanthropic gifts, and the policy will be reviewed in 2024, subject to various legislative and organizational references.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">Pay/Personnel</td>  
+        <td nowrap="y">
+          Probation
+          <BR><a href="/doc/outline?filename=PCY09%20009%20-%20Probation%20Policy%20-%202017%20-%20Linked%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=PCY09%20009%20-%20Probation%20Policy%20-%202017%20-%20Linked%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/PCY09 009 - Probation Policy - 2017 - Linked to MyNLA.PDF">PCY09 009 - Probation Policy - 2017 - Linked to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">112,822</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-18T06:35:44.563Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The Probation Policy of the National Library of Australia (NLA) applies to new ongoing employees with less than six months of service in the Australian Public Service (APS) or those transferred from non-APS agencies. Probation is a condition of employment that lasts for six months for general employees and nine months for graduates, during which the new employee's suitability is assessed based on attendance, behavior, communication, results, culture fit, and role-specific criteria. The policy aims to identify relevant strengths and weaknesses and provide support, development opportunities, and feedback to help the employee achieve confirmation of ongoing employment. Probation may be extended beyond the initial period for documented reasons, and it continues in the new location until completed, even after promotion or transfer. <P>Failure to meet the expectations outlined in the Probation Agreement may result in employment termination. The policy is governed by the National Library of Australia Enterprise Agreement, the National Library of Australia Act 1960, and related legislation and procedures.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">Finance</td>  
+        <td nowrap="y">
+          Procurement
+          <BR><a href="/doc/outline?filename=NLA%20Procurement%20Policy%20-%20Linked%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=NLA%20Procurement%20Policy%20-%20Linked%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/NLA Procurement Policy - Linked to MyNLA.PDF">NLA Procurement Policy - Linked to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">798,440</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-18T06:51:09.548Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+<P>The National Library of Australia (NLA) has implemented a Procurement and Contract Management Policy to ensure responsible use and management of public resources. The policy aims to achieve efficiency, effectiveness, economy, and ethics in resource utilization while allowing flexibility for innovation and appropriate reflection of procurement scale, scope, and risk. The policy requires officials to categorize procurement activities based on specific details and value, and outlines obligations for procurement officers and contract managers, including compliance with relevant Commonwealth and NLA policies and legislation, and behaving ethically at all times. Failure to adhere to these policies may result in criminal, civil, or administrative penalties. The policy outlines stages of the procurement process, including defining the need and requirement, identifying stakeholders, estimating expected value, and considering lessons learned from previous procurements. Stakeholder communication is emphasized throughout the procurement and contract management processes. The policy also covers contract management rules, contract start-up, contract performance, finalizing contract closure, review, references, and related documents. The NLA has adopted some elements of the Commonwealth Procurement Rules (CPRs) to promote best procurement practices, although it is not subject to all Commonwealth procurement rules.
+</P><P>
+</P><P>Procurement officers at the NLA are responsible for adhering to various laws, guidelines, and policies related to procurement, such as the Commonwealth Procurement Rules, the Public Governance, Performance and Accountability Act, and the Australian Government Procurement Policies. They must determine the appropriate funding source, ensure it is sufficient based on the procurement's value, and consult the chief financial officer if necessary. They must estimate the value of a procurement, including whole-life costs, and follow the NLA's procurement thresholds to ensure the level of effort applied is commensurate with the procurement's scale, scope, and risk. Procurement officers must achieve Value for Money (VFM) by conducting reasonable enquiries and demonstrating that the chosen arrangement provides the best value for the organization. They must consider various financial and non-financial costs and benefits when determining VFM, including quality, fitness for purpose, suitability, experience, performance history, risks, flexibility, environmental sustainability, and whole-of-life costs. Industry engagement is encouraged, but it must maintain fairness, equality, and non-discrimination among potential suppliers and be accurately recorded.
+</P><P>
+</P><P>The NLA has established policies and requirements for procurement and contract management, emphasizing fairness, impartiality, consistency, transparency, and security in procurement processes. Procurement officers must maintain appropriate documentation, identify and manage risks, promote probity, determine the appropriate procurement method, and handle complaints. The NLA encourages the use of existing standing offer panels, but officers must follow specific templates when seeking responses and entering into contracts through these panels. For simple procurements, a minimum of three written quotations is required, while complex procurements necessitate an open tender approach to market. The NLA must evaluate all received responses, prioritizing value for money. The policy requires the use of evaluation criteria, a tender evaluation plan, and communication through a tender evaluation chair. The NLA must handle late responses, accept them if the delay is due to NLA mishandling, and evaluate all</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">General/Other</td>  
+        <td nowrap="y">
+          Protective Security
+          <BR><a href="/doc/outline?filename=NLA%20Protective%20Security%20Policy%20and%20Procedures%20Manual%20update%202020%20-%20Linked%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=NLA%20Protective%20Security%20Policy%20and%20Procedures%20Manual%20update%202020%20-%20Linked%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/NLA Protective Security Policy and Procedures Manual update 2020 - Linked to MyNLA.PDF">NLA Protective Security Policy and Procedures Manual update 2020 - Linked to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">2,170,070</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-16T05:12:44.195Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia's Protective Security Policy and Procedures Manual has been updated and will be reviewed in 2022. The manual outlines policies and procedures for protective security measures, including physical, information, personnel, and IT security. It emphasizes the importance of safeguarding the library's collection, staff, users, assets, information, and reputation. All staff must follow security policies and procedures, and the manual references the Australian Government Protective Security Policy Framework and the National Library Regulations 2018. <P>Key appointments and bodies, such as the Council, Chief Security Officer, and Emergency Planning and Business Continuity Committee, are responsible for implementing protective security measures and fostering a positive security culture. The manual highlights the importance of risk management and protective security measures in ensuring safety and security, and explains that Australian Government agencies are required to take appropriate measures to protect people, information, and assets both domestically and overseas. The manual also emphasizes the need for a positive security culture and the application of the Protective Security Policy Framework as it relates to the library's risk environment. Business Continuity Management is necessary to ensure continued library operations during security or safety events. </P><P>The Chief Security Officer (CSO) oversees strategic security measures in areas such as governance, information, personnel, and physical security to support the organization's leadership in carrying out operations. The CSO is responsible for fostering a security-conscious culture and delegating day-to-day activities as necessary. The CSO's primary oversight responsibilities include ensuring personnel safety, appointing sufficient security advisors, embedding security management awareness, managing security incidents, fostering a positive security culture, providing security training, establishing performance measures, and preparing the annual security report. The library's physical security program includes measures such as foyer information desks, monitored alarm systems, closed circuit televisions, electronic access control systems, locks and keys, guards and patrols, and staff training. </P><P>The library's collection is divided into three storage zones based on the value and access restrictions of the materials, with Zone 5 containing the library's most significant collection material and classified documents. The library implements a multi-layered security system, including physical security controls and zones, personnel security policies and procedures, intrusion detection systems, access control, and access/identity passes. The library has a contracted security guard service to assist in protecting personnel, visitors, premises, collections, and other assets. Access control is managed using a combination of the electronic access control system and patrolling security guards, and staff members are allocated access via coded information embedded within their photographic identity pass. </P><P>The library prioritizes protecting sensitive materials from unauthorized access or exposure of weaknesses, with items with high national significance kept in higher security zones. The library also emphasizes proper security measures for monetary transactions, with collection managers and supervisors responsible for securing petty cash. The library has a controlled key system managed by the SCC security guards, with access to the key board restricted to senior officials. Staff members can obtain keys with authorization, which must be returned promptly. </P><P>The library has an electronic intrusion alarm system, with security devices monitored 
+</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">General/Other</td>  
+        <td nowrap="y">
+          Public Interest Disclosure
+          <BR><a href="/doc/outline?filename=Policy%20PCY14%20001%20-%20Public%20Interest%20Disclosure%20(PID)%20Procedure%20-%20August%202021%20-%20for%20internal%20-%20Signature%20and%20Tracking.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Policy%20PCY14%20001%20-%20Public%20Interest%20Disclosure%20(PID)%20Procedure%20-%20August%202021%20-%20for%20internal%20-%20Signature%20and%20Tracking.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Policy PCY14 001 - Public Interest Disclosure (PID) Procedure - August 2021 - for internal - Signature and Tracking.PDF">Policy PCY14 001 - Public Interest Disclosure (PID) Procedure - August 2021 - for internal - Signature and Tracking.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">1,012,290</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-16T05:02:21.101Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia has implemented procedures in accordance with the Public Interest Disclosure Act 2013 to promote integrity and accountability in the public sector. The act aims to encourage disclosures by public officials and protect them from reprisals. Disclosable conduct refers to actions taken by government agencies, public officials in their official capacity, or contracted service providers while executing a federal contract. Disclosers are protected from reprisals, and the act outlines four types of disclosures: internal, external, legal practitioner, and emergency disclosures. <P>Public officials, including directors-general, staff, contractors, and officers of contracted service providers, are subject to the act's broad definition. The National Library maintains a list of authorized officers who have been trained to receive and handle disclosures. Disclosures can be made to authorized officers, supervisors, the Commonwealth Ombudsman, or the Inspector General of Intelligence and Security, depending on the nature of the disclosable conduct. Disclosures must be kept confidential, except in certain circumstances. </P><P>The act requires authorised officers to consider whether the disclosure meets the requirements of the PID Act, allocate it to the appropriate agency, and notify relevant parties of the decision. Disclosers may remain anonymous or use a pseudonym, and disclosures can be made orally or in writing. The act also outlines exemptions to the confidentiality requirement, such as if the information has been previously published or is not intelligence information. The person responsible for handling disclosures, known as the authorised officer, must inform the designated agency’s principal officer about the disclosure, the disclosed information, suspected misconduct, and the discloser’s identity (if known and consented to) upon allocating the handling of a disclosure to an agency. </P><P>The authorised officer must also provide this information to the Ombudsman or IGIS, depending on the allocated agency, and inform the discloser of the allocation decision. The authorised officer must maintain confidential records of the allocation decision and discloser notification. The Director-General will request annual reports from authorised officers on the number of disclosures received and allocation decisions made. To receive protection under the PID Act, the discloser must first make an internal disclosure and meet certain requirements, such as having information that tends to show disclosable conduct and not disclosing intelligence information. </P><P>Legal practitioner disclosures are also permitted, but the disclosure must not include intelligence information and the legal practitioner must hold the appropriate security clearance if the discloser knows or should know that the information has a national security or protective security clearance. Emergency disclosures are also allowed under certain circumstances. However, public officials will not receive protection under the PID Act if they release information to someone outside of the government, such as a journalist or union representative, unless the conditions for an external disclosure are met. The article emphasizes the significance of conducting risk assessments during various stages of the disclosure process, starting from the initial assessment by the authorized officer while allocating the disclosure and continuing with a second assessment when the disclosure is assigned to the National Library. </P><P>The likelihood of reprisal actions against the discloser should be evaluated as the matter progresses, as the risk may change. Factors to consider during the assessment include the likelihood of the discloser being identified,</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">General/Other</td>  
+        <td nowrap="y">
+          Recordkeeping
+          <BR><a href="/doc/outline?filename=Policy%20PCY09%20001%20-%20Recordkeeping%20Policy%20-%20Linked%20to%20OurWeb.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Policy%20PCY09%20001%20-%20Recordkeeping%20Policy%20-%20Linked%20to%20OurWeb.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Policy PCY09 001 - Recordkeeping Policy - Linked to OurWeb.PDF">Policy PCY09 001 - Recordkeeping Policy - Linked to OurWeb.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">128,902</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-16T04:50:27.201Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia's Recordkeeping Policy aims to implement effective recordkeeping practices that meet the organization's business needs, accountability requirements, and stakeholder expectations. The policy applies to all library staff, operations, and records created to support business activities. The library recognizes its regulatory responsibilities as a Commonwealth agency under the Archives Act 1983 and the Commonwealth Authorities and Companies Act 1997. The policy emphasizes the importance of accurate, detailed, authentic, complete, secure, robust, findable, and related records that are fit for their purpose. <P>The library's primary recordkeeping system is TRIM, which captures electronic and digital surrogates of original paper-based records. The library also manages other business systems that contain records of business activity outside TRIM. The library's systems manage the creation, capture, storage, protection, version control, security, and disposal of records in accordance with approved disposal authorities. The library promotes good recordkeeping by acknowledging its importance, building it into work procedures and performance measures, and allocating sufficient resources for recordkeeping. </P><P>The policy context is the library's broader information management framework, which integrates recordkeeping policies and procedures. The library is committed to developing and maintaining recordkeeping systems in accordance with the Australian Standard AS ISO 15489-2002 and National Archives of Australia recordkeeping advice, standards, and policies. The library recognizes the potential problems posed by electronic records and will utilize its expertise in managing electronic format obsolescence and digital preservation to facilitate continual access to official records. The library's management promotes good recordkeeping by acknowledging its importance, building it into work procedures and performance measures, and allocating sufficient resources for recordkeeping. </P><P>The policy emphasizes the importance of accurate, detailed, authentic, complete, secure, robust, findable, and related records that are fit for their purpose. The library's systems manage the creation, capture, storage, protection, version control, security, and disposal of records in accordance with approved disposal authorities. The library promotes good recordkeeping by acknowledging its importance, building it into work procedures and performance measures, and allocating sufficient resources for recordkeeping. The policy context is the library's broader information management framework, which integrates recordkeeping policies and procedures. </P><P>The term "business activities" encompasses all functions, processes, actions, and transactions carried out by an organization and its employees. Business information systems are software programs that manage an organization's business information by creating, storing, processing, and providing access to it. Capture involves intentionally recording information into a recordkeeping system, which can be automated in certain business activities. Disposal involves implementing decisions regarding the retention, destruction, or transfer of records, as documented in disposal authorities or other instruments. </P><P>Evidential value refers to the significance of information as evidence of an organization's functions, policies, decisions, procedures, operations, and activities. Information management involves managing the definition, ownership, sensitivity, quality, and accessibility of information to support business processes. The hardware, software, networks, facilities, and other resources required to develop, test, deliver, monitor, control, or support IT services collectively constitute the information technology infrastructure. The Archives Act 1983 allows for the destruction of certain records without formal authorization through a process called normal administrative practice (NAP), which applies to exact duplicates, reference materials with</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">Building/Facilities</td>  
+        <td nowrap="y">
+          Smokefree
+          <BR><a href="/doc/outline?filename=Policy%20-%20PCY11%20040%20-%20Smoke-free%20workplace%20Policy%20-%20Linked%20to%20MyNLA.PDF" class="outlineLink">outline</a>
+           <a href="/search?filename=Policy%20-%20PCY11%20040%20-%20Smoke-free%20workplace%20Policy%20-%20Linked%20to%20MyNLA.PDF" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Policy - PCY11 040 - Smoke-free workplace Policy - Linked to MyNLA.PDF">Policy - PCY11 040 - Smoke-free workplace Policy - Linked to MyNLA.PDF</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">100,373</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-16T04:03:56.929Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The Smoke-Free Work Environment Policy of the National Library of Australia aims to eliminate the health risks associated with smoking and exposure to Environmental Tobacco Smoke (ETS) by providing a smoke-free environment for workers, contractors, volunteers, visitors, and clients. The policy prohibits smoking tobacco, using Electronic Nicotine Delivery Systems (ENDS), and consuming smokeless tobacco products within the library building, near entrances and exits, and in library vehicles. Workers are allowed to smoke during unpaid approved breaks, but only in compliance with the policy and without causing disruption to work. The library encourages smokers to seek assistance to quit smoking and provides support through health and wellbeing programs, access to free 'Quit' information packs, and up to eight hours of personal/carer's leave to attend accredited 'quit' programs. <P>The policy is reviewed every three years or earlier if required and references the Work Health and Safety Act 2011, Smoke-Free Public Places Act 2003, Comcare's 'Smoking in or near Commonwealth workplaces', and other relevant guidelines and policies.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">Collection</td>  
+        <td nowrap="y">
+          Trove Content Inclusion
+          <BR><a href="/doc/outline?filename=Trove%20Content%20Inclusion%20Policy%20-%202014.DOCX" class="outlineLink">outline</a>
+           <a href="/search?filename=Trove%20Content%20Inclusion%20Policy%20-%202014.DOCX" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Trove Content Inclusion Policy - 2014.DOCX">Trove Content Inclusion Policy - 2014.DOCX</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">248,156</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-18T06:52:09.991Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia's approach to adding content to Trove, an online service that includes digital and physical materials, metadata, and licensed digital content, is outlined in its Content Inclusion Policy, which prioritizes managed collections held by galleries, libraries, archives, and museums, as well as metadata describing content. Trove focuses on content that requires additional access steps, primarily sourced from Libraries Australia, and prioritizes digitized content from the National Library, descriptions of items held in Australian libraries, and freely available digital content created by Australians, about Australia, or of interest to Australians. The library considers factors such as adherence to the policy, utility, quality, relationship to existing Trove content, costs, and accessibility to Australians when deciding whether to include digital content. Trove includes various types of content, such as publications, original materials, and electronic resources, as well as user-generated content. <P>The library's Newspaper Digitisation Program provides digitized Australian newspapers, while digitized books and journals from the National Library are also included. Full-text articles from Australian research repositories, aggregators, and licensed eResources are available, but only to patrons of subscribing libraries. Documentary content, including pictures, objects, notated music, and audio, is also included. The library determines priorities for inclusion based on factors such as copyright, accessibility, and resources required. </P><P>Scholarly indexes that provide enhanced access to Trove content are also in scope for inclusion. Trove includes various formats, such as transcripts of radio broadcasts, archival oral history recordings, films, maps, personal and organizational archives, and government records. The library archives Australian websites from the PANDORA archive and those collected by libraries and cultural organizations that are not included in PANDORA. Users can contribute digital photographs to the Trove: Australia in pictures Flickr group, and Trove includes tags, comments, lists, and text corrections created by users. </P><P>The majority of digital content in Trove is owned and managed by organizations other than the National Library, and users may encounter different levels of accessibility and availability due to copyright restrictions. Trove aims to meet Web Content Accessibility Guidelines, but as a majority of online content is managed by other organizations, the library cannot guarantee accessibility for all discoverable content. The National Library collaborates with various online discovery services to provide access to content related to Australian life and society, and most Trove content can be reused in third-party websites via the Trove API, subject to certain conditions. The library has the right to remove content from Trove if it is deemed to be illegal, defamatory, or in violation of copyright or privacy laws, and Trove is indexed by search engines, but the library cannot guarantee that deleted content will not be discoverable through search engines for some time. </P><P>The library asks organizations harvesting Trove results to periodically re-harvest results to remove deleted content, but this cannot be guaranteed. The library will not remove personal information from public domain sources but will strive to find positive outcomes when personal information is used in ways that highlight it. The National Library aims to maximize Australians' access to content documenting Australian life and society by working with a wide range of cultural institutions and other organizations.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">Finance</td>  
+        <td nowrap="y">
+          User Charging
+          <BR><a href="/doc/outline?filename=User%20Charging%20Policy%20May%202015%20-Linked%20to%20Ourweb.DOCX" class="outlineLink">outline</a>
+           <a href="/search?filename=User%20Charging%20Policy%20May%202015%20-Linked%20to%20Ourweb.DOCX" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/User Charging Policy May 2015 -Linked to Ourweb.DOCX">User Charging Policy May 2015 -Linked to Ourweb.DOCX</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">57,694</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-18T06:13:20.999Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia implements cost recovery measures in accordance with the Australian Government's Cost Recovery Guidelines, prioritizing resource efficiency and accountability. As a statutory authority established under the National Library Act 1960, the library's functions include maintaining and developing a national collection of library materials related to Australia and its people, and making them available to appropriate individuals and institutions in a way that maximizes their use in the national interest. The library regularly reviews its cost recovery arrangements in accordance with the Guidelines. The library provides various library-related services, such as bibliographical services, for free to parliament, Commonwealth departments and territories, and other authorities concerned with library matters, as well as for public access catalogues, reference services, and education programs. <P>Charges apply to commercial operations, copying, offsite borrowing of library collections, and some basic products or services with added value benefits. The Libraries Australia service, an internet-based service for libraries, their users, and individuals, is provided for a fee. The library has an advisory committee that provides advice on strategic and policy issues affecting the service, and the NLA Council oversees all charging arrangements. Legal advice confirms the validity of applying charges for these products, and fees are charged directly to the purchaser of the services. </P><P>The library offers various products and services, including commercial products, incrementally costed products, marginally costed services, and below marginally costed services. Direct and indirect costs are recovered for incrementally costed products, while direct costs are recovered for marginally costed services. Some premium services may incur additional fees. The Copyright Act limits user-charges for items subject to its provisions to the cost of making and supplying the reproduction. </P><P>The National Library of Australia's Corporate Management Group (CMG) evaluates the introduction of fees for new services and annually reviews the cost of existing ones. The GST applies to products and services sold by the library if their selling price is equal to or greater than 75% of their cost. The CMG has mandated a comprehensive costing review of Copies Direct and Document Delivery/Interlibrary Loan services every three years. The library provides various services such as Inter-library Loan/Document Delivery through departments like Document Supply, Asian Collections, and Maps. </P><P>The library follows the principles of efficiency and effectiveness in cost recovery and avoids gold plating and cost padding. The Australian Government Cost Recovery Guidelines outline terms related to cost recovery, including commercial charges, cost recovery fees, and cost recovery levies. The library's user-charged products and services include hire of library facilities, microfiche duplication, and Copy Direct Services. Divisions within the library cover services such as Asian Collections, Libraries Australia, commercial services like library facility hire, and external digitization requests. </P><P>Marginal costs for copying and basic support are listed for each division.</P></div></td>
+      </tr>    
+      
+      <tr valign="top">
+        <td nowrap="y">Building/Facilities</td>  
+        <td nowrap="y">
+          Venue Hire
+          <BR><a href="/doc/outline?filename=Venue%20Hire%20Policy%20-%20Final%20-%20Linked%20to%20MyNLA.DOCX" class="outlineLink">outline</a>
+           <a href="/search?filename=Venue%20Hire%20Policy%20-%20Final%20-%20Linked%20to%20MyNLA.DOCX" class="searchLink">search</a>
+        </td>  
+
+        <td>
+          <a href="/static/policyDocs/Venue Hire Policy - Final - Linked to MyNLA.DOCX">Venue Hire Policy - Final - Linked to MyNLA.DOCX</a>
+        </td>   
+        <td nowrap="y" style="text-align:right">232,957</td> 
+        <td nowrap="y">kfitch<BR/>2023-12-19T03:23:17.027Z</td> 
+        <td style="width:25%"><div style='height:6em;overflow-y: scroll'>
+The National Library of Australia allows selected venues to be hired by external clients for a fee or in exchange for services provided by the library. The policy aims to provide accessibility to the community, optimize revenue, and ensure accountability and transparency in managing external venue hire. Definitions include venue hire customer, license for hire, and venue hire charges, which may vary based on factors such as time of day, type of event, and type of hiring organization. The library reserves the right to decline venue hire requests and approve third-party providers associated with external events. <P>All external venue hires will be subject to conditions of hire presented in the form of an external license for hire contract agreement. The policy takes effect immediately and will be reviewed biennially, with related guidelines and charges reviewed annually. Key references for the policy include the National Library Regulations, Strategic Directions, National Library User Charging Policy, and related documents such as the Venue Hire web page, Venue Hire rates, Guidelines for the Hire of National Library Venues, Community Outreach Branch Strategic Plan, and What's On venue booking system.</P></div></td>
+      </tr>    
+           
+    </table>
+  
+    
+  
+  </div>
+
+</div>
+
+</div> <!-- end of content div -->
+</body>
+</HTML>

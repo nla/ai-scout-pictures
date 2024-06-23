@@ -1,0 +1,115 @@
+<%- include('../common/header') ; -%>
+
+
+<%- include('../common/searchForm') ; -%>
+
+<div id="results">
+  
+  <H3>This is an index of about <%= pictureCount.toLocaleString() %> NLA images</H3>
+  <div class="indent">
+    <P>Francis had already scraped 5000 of these and asked the openAI to describe each image.  I've used his images and openAI data and 
+      used  <a href="https://openai.com/research/clip">openAI CLIP</a> 
+      (based on the <a href="https://huggingface.co/openai/clip-vit-large-patch14">openai/clip-vit-large-patch14 version</a>)
+      to generate image embeddings, and also used the text embedding capability of CLIP to generate text 
+      embeddings for both the NLA catalogue metadata for the image and the openAI description (obtained by Francis).
+      I'm also loading extra images by scrapping the Blacklight SOLR index, looking for likely pictures.  I guess there are 
+      many tens of thousands of (individually) uncatalogued images I could scrape from {somewhere}.
+    </P>
+    <P>The goal is to test the various ways of finding images based on a text query:</P>
+    <P>
+      <OL>
+        <LI>Image semantic similarity: compares the CLIP embedding of the image with the CLIP embedding of the query text</LI>
+        <LI>NLA metadata keyword: compares the NLA metadata text with the query text (traditional Lucene TF/IDF approach)</LI>
+        <LI>openAI description keyword: compares the openAI description text with the query text (traditional Lucene TF/IDF approach)</LI>
+        <LI>NLA metadata semantic similarity: compares the CLIP embedding of the NLA metadata text with the CLIP embedding of the query text</LI>
+        <LI>openAI description semantic similarity: compares the CLIP embedding of the openAI description text with the CLIP embedding of the query text</LI>
+      </OL>
+    </P>
+    <P>You can set the <i>boost</i> of these 5 approaches using the sliders next to the query.  If you set a sliders to 0, the corresponding 
+      search criteria will not be used at all.
+    </P>
+
+  </div>
+<H3>Sample searches</H3>
+<div class="indent">
+<OL>
+
+  <LI><a href='search/?stxt=aircraft%2C pilots%2C mechanics'>aircraft, pilots, mechanics</a></LI>
+  <LI><a href='search/?stxt=animals trapped by a flood'>animals trapped by a flood</a></LI>
+  <LI><a href='search/?stxt=art deco movie theatre'>art deco movie theatre</a></LI>
+  <LI><a href='search/?stxt=art deco movie theatre interior'>art deco movie theatre interior</a></LI>
+  <LI><a href='search/?stxt=Australian prime minister with Amercian president'>Australian prime minister with Amercian president</a></LI>
+  <LI><a href='search/?stxt=australian prime minister, standing behind american president, appearing to bow'>Australian prime minister, standing behind American president, appearing to bow</a> (I was looking for image #3)</LI>
+  <LI><a href='search/?stxt=ballet'>ballet</a></LI>
+  <LI><a href='search/?stxt=book covers'>book covers</a></LI>
+  <LI><a href='search/?stxt=bridge construction'>bridge construction</a></LI>
+  <LI><a href='search/?stxt=busy country town street'>busy country town street </a></LI>
+  <LI><a href='search/?stxt=children having fun in the snow'>children having fun in the snow</a></LI>
+  <LI><a href='search/?stxt=cigarette cards  featuring people on horseback'>cigarette cards  featuring people on horseback</a></LI>
+  <LI><a href='search/?stxt=civil disobediance'>civil disobediance [sic]</a></LI>
+  <LI><a href='search/?stxt=energetic and fast motion'>energetic and fast motion</a></LI>
+  <LI><a href='search/?stxt=fancy dress party'>fancy dress party</a></LI>
+  <LI><a href='search/?stxt=flamboyent, outrageous, colorful hat'>flamboyent, outrageous, colorful hat</a></LI>
+  <LI><a href='search/?stxt=gothic building'>gothic building</a></LI>
+  <LI><a href='search/?stxt=having fun at the beach'>having fun at the beach</a></LI>
+  <LI><a href='search/?stxt=human mother and child'>human mother and child</a></LI>
+  <LI><a href='search/?stxt=lake burley griffen'>lake burley griffen [sic]</a> (run with ONLY image semantic summary - how does CLIP know this?)</LI>
+  <LI><a href='search/?stxt=man giving a speech.  Man standing behind him with his head bowed.'>man giving a speech.  Man standing behind him with his head bowed.</a></LI>
+  <LI><a href='search/?stxt=mining with heavy machinery'>mining with heavy machinery</a></LI>
+  <LI><a href='search/?stxt=old movie houses'>old movie houses</a></LI>
+  <LI><a href='search/?stxt=people looking very happy, smiling or laughing outside'>people looking very happy, smiling or laughing outside</a></LI>
+  <LI><a href='search/?stxt=people on boat'>people on boat</a></LI>
+  <LI><a href='search/?stxt=people studying in a library'>people studying in a library</a></LI>
+  <LI><a href='search/?stxt=playing music'>playing music</a></LI>
+  <LI><a href='search/?stxt=politician in a suit'>politician in a suit</a></LI>
+  <LI><a href='search/?stxt=propaganda posters'>propaganda posters</a></LI>
+  <!-- LI><a href='search/?stxt=shooting up'>shooting up</a></LI -->
+  <LI><a href='search/?stxt=surveyors at work with theodolite'>surveyors at work with theodolite</a></LI>
+  <LI><a href='search/?stxt=three people in a photograph'>three people in a photograph</a></LI>
+  <LI><a href='search/?stxt=using horses for agricultural work'>using horses for agricultural work</a></LI>
+  <LI><a href='search/?stxt=vintage promotional posters for airlines'>vintage promotional posters for airlines</a></LI>
+  <LI><a href='search/?stxt=walking in the bush'>walking in the bush</a></LI>
+  <LI><a href='search/?stxt=a woman protesting%2C holding a sign'>a woman protesting, holding a sign</a></LI>
+  <LI><a href='search/?stxt=world war one tanks in france'>world war one tanks in france</a></LI>
+
+  
+  
+
+</OL>
+</div>
+
+<H3>Sample similarity searches</H3>
+<div class="indent">
+<OL>
+  <LI><a href='search?like=https://nla.gov.au/nla.obj-139557192/image'>Come, my Nerida, come</a></LI>
+  <LI><a href='search?like=https://nla.gov.au/nla.obj-162905998/image'>Sydney Harbour Bridge construction</a></LI>
+  <LI><a href='search?like=https://nla.gov.au/nla.obj-140357064/image'>Old Parliament House</a></LI>
+  <LI><a href='search?like=https://nla.gov.au/nla.obj-140228283/image'>killer koalas..</a></LI>
+  <LI><a href='search?like=https://nla.gov.au/nla.obj-145134641/image'>surf rescue</a></LI>
+  <LI><a href='search?like=http://nla.gov.au/nla.obj-157612516/image'>shearing sheep</a></LI>
+  <LI><a href='search?like=http://nla.gov.au/nla.obj-141778761/image'>ship in ice</a></LI>
+  
+</OL>
+</div>
+
+
+<H3>TO DO</H3>
+<div class="indent">
+<p>
+  <OL>
+    <LI>Is this the best CLIP variant (accuracy/speed tradeoff)?</LI>
+    <LI>Performance - this CLIP version is running on Hinton's CPU, not GPU and can embed and index (into SOLR) about 1 image per second (text embeddings 
+      are much faster, SOLR indexing time is relatively trivial).  It requires too much GPU memory to run on Hinton with all the other models we're running there at the moment, 
+      but probably worth investigating GPU running when we have another 4090.
+    </LI>
+    <LI>Newer alternatives to CLIP?</LI>
+    <LI>Evaluate the 5 query scalings (intuitively, CLIP image and Lucene TF/IDF should be enough?)</LI>
+  </OL>
+
+</p>
+
+</div>
+
+</div>
+
+<%- include('../common/footer') ; -%>

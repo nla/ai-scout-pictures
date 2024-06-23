@@ -1,0 +1,76 @@
+<%- include('../common/header') ; -%>
+
+
+<%- include('../common/searchForm') ; -%>
+
+<% 
+  function show(heading, val, suppressBR) {
+    if (val) return ((suppressBR) ? "" : "<BR>") + ((heading) ? (heading + ": ") : "") + val ;
+    else return "" ;
+  }
+
+  function genImageSrc(id) {
+    let im = id.replace('https://nla.gov.au', '/static/pics')
+            .replace('http://nla.gov.au', '/static/pics')
+            .replace("/image", ".jpg")
+            .replace("/representativeImage", ".jpg") ;
+    // something like   /static/pics/nla.obj-161515917.jpg
+    let i = im.indexOf('/nla.obj-') ;
+    let j = im.indexOf('.jpg') ;
+    let idd = Number(im.substring(i+9, j)) ;
+    let subDir = idd % 1000 ;
+    return im.substring(0, i) + "/" + subDir + im.substring(i) ;
+
+  }
+%>
+<div id="results">
+  
+  <% if (like) {%>
+    <H3>Image similar to <%= like %></H3>
+  <% } %>
+
+  <% if (err) { %>
+    <H2 style="color:red"><%=err%></H2>
+  <% } %>
+  <% if (searchResults) { 
+    let r = 1 ; %>
+    <H2>Found <%=searchResults.response.numFound%></H2>
+    <TABLE CELLSPACING="10">
+      <TR><TH colspan='2'></TH><TH>NLA Metadata</TH><TH>openAI description</TH></TR>
+    <% for (let doc of searchResults.response.docs) { %>
+        <TR valign="top">
+          <TD><%=r++%></TD>
+          <TD>
+            <A href='<%=doc.id%>'><img src='<%- genImageSrc(doc.id) -%>' width=300 /></A>
+<!--
+            <A href='<%=doc.id%>'><img src='<%=doc.id.replace('https://nla.gov.au', '/static/pics').replace("/image", ".jpg").replace("/representativeImage", ".jpg")%>' width=300 /></A>
+-->
+          </TD>
+          <TD>
+           <B><%= doc.title %></B> 
+           <%- show("Author", doc.author) -%>
+           <%- show("Description", doc.originalDescription) -%>
+           <%- show("Notes", doc.notes) -%>
+           <%- show("Subjects", doc.subjects) -%>
+           <%- show("Format", doc.format) -%>
+           <%- show("BibId", doc.bibId) -%>
+           <BR/>
+           <%- show("Score", doc.score.toFixed(4)) -%>
+           <%- show("Image similarity", doc.imageSim.toFixed(4)) -%>
+           <%- show("Metadata similarity", doc.metadataSim.toFixed(4)) -%>
+           <%- show("openAi similarity", doc.openaiSim.toFixed(4)) -%>
+           
+           <BR/><BR/><a href="/search?like=<%=doc.id%>">Similar images</a>
+          </TD>
+          <TD width="40%">
+            
+            <%- show("", doc.openAIDescription || "-", true) -%>
+          </TD>
+        </TR>
+    <% } %>
+    </TABLE>
+  <% } %>
+</div>
+
+<%- include('../common/footer') ; -%>
+

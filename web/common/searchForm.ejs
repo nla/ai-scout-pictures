@@ -1,0 +1,43 @@
+ <form action="/search" method="get" id="searchForm">
+  <table>
+    <tr valign='top'>
+      <td nowrap>
+        <input type='text' size='60' id='stxt' name="stxt" style='font-size:105%' value='<%=stxt%>' class='veryLightMauve'/>
+        <button id='searchButton' type="submit" class='searchButton'><span id='searchText' class='searchText'>Search</span></button>
+      </td>
+      <td nowrap style='padding-left:1em;font-variant:small-caps'>
+        Scaling
+        <table>
+          <tr valign="top">
+            <tr valign="top">
+              <td>Image semantic similarity</td>
+              <td><input type='range' name='imageEmbedding' min='0' max='1' step='0.025' value='<%=scalings.imageEmbedding%>'   style="margin-top:0em"             
+                title='Relative boost of scores from search text semantics matching the image'> </td>
+            </tr>              
+            <td>NLA metadata keyword</td>
+            <td><input type='range' name='metadataKeyword' min='0' max='1' step='0.025' value='<%=scalings.metadataKeyword%>'   style="margin-top:0em"             
+              title='Relative boost of scores from finding keywords within NLA metadata'> </td>
+          </tr>
+          <tr valign="top">
+            <td>openAI description keyword</td>
+            <td><input type='range' name='openAIKeyword' min='0' max='1' step='0.025' value='<%=scalings.openAIKeyword%>'   style="margin-top:0em"             
+              title='Relative boost of scores from finding keywords within the openAI generated description'> </td>
+          </tr>
+
+          <tr valign="top">
+            <td>NLA metadata semantic similarity</td>
+            <td><input type='range' name='metadataEmbedding' min='0' max='1' step='0.025' value='<%=scalings.metadataEmbedding%>'   style="margin-top:0em"             
+              title='Relative boost of scores from search text semantics matching the NLA metadata'> </td>
+          </tr> 
+          <tr valign="top">
+            <td>openAI description semantic similarity</td>
+            <td><input type='range' name='openAIEmbedding' min='0' max='1' step='0.025' value='<%=scalings.openAIEmbedding%>'   style="margin-top:0em"             
+              title='Relative boost of scores from search text semantics matching the openAI generated description'> </td>
+          </tr>                   
+        </table>
+      </td>
+    </tr>
+
+  </table>
+</form>
+

@@ -1,0 +1,231 @@
+<%- include('../common/header') ; -%>
+
+
+<div style="margin-right:1.5em">
+  
+ 
+
+  <% if (err) { %>
+    <div class="status"><%= err %></div>
+  <% }
+     else { %>
+
+  <H2><%= doc.title %>  
+    <!-- a href="/search?id=<%=doc.id%>" style="font-size:70%" class="searchLink">search</a --> </H2>
+  <table cellspacing=4 cellpadding=4>
+
+    <tr valign="top">
+      <td nowrap="y">Collection</td>  <td><%= doc.collection %>
+         <!-- a href="/upload/update?id=<%=escape(doc.id)%>" class="outlineLink" style="font-size:75%">Update collection or title</a -->
+      </td>
+    </tr>
+
+    <tr valign="top"></tr>  
+      <td>Id</td>  
+      <td><a href="https://nladom-test.nla.gov.au/<%=doc.id%>" target="_blank"><%= doc.id %></a></td>
+    </tr>
+    <!--tr valign="top"></tr>        
+      <td>File size</td>              <td>bytes</td> 
+    </tr-->
+    <tr valign="top"></tr>        
+      <td>Uploaded</td>    <td nowrap="y"><%= doc.loadedBy %> <%= doc.loadedDate %></td> 
+    </tr>
+    <tr valign="top"></tr>        
+      <td>Generated summary of the entire interview</td> 
+      <td>
+        <DIV>         
+          <div style='float:right;width:33%;margin-top:-5em'>
+            <div style="margin-left:1em;font-size:80%">
+              Audio: 
+              <audio id="audioEle" controls  style="width:20em">
+			          <source src="/listen/<%=doc.id%>" type="audio/mpeg">
+			          Your browser will not play audio
+			        </audio>
+            </div>
+
+            <div style='margin-left:1em;border:1px solid #dddddd;padding:8px;font-size:90%'>
+            <B>Possibly similar interviews</B>
+            <P>      
+              <OL>
+              <% for (let sim of doc.mostSimilar) { %>
+                <LI>
+                  <a href="/doc/outline?id=<%=escape(sim.id)%>" target="_blank"> <%- sim.title %></a> 
+                    <span style="font-size:80%;color:#888888">[ <%- Number(sim.score).toFixed(4) %> ]</span>
+                </LI>         
+              <% } %>
+              </OL>
+            </P>
+            </div>
+          </div>  
+          <div><%- doc.summary.replaceAll("||", " ") %></div>      
+        </DIV>
+      </td>      
+    </tr>
+  </table>
+  <% } %>
+
+  <%
+
+  function formatCs(cs) {
+
+    if ((cs === undefined || cs === null) || (typeof cs !== 'number')) return "" ;
+    let secs = Math.floor(cs / 100) ;
+    let mins = Math.floor(secs / 60) ;
+    let hrs = Math.floor(mins / 60) ;
+    secs = secs - mins * 60 ;
+    mins = mins - hrs * 60 ;
+    return hrs.toString().padStart(2,0) + ":" + mins.toString().padStart(2,0) + ":" +
+          secs.toString().padStart(2,0) ;
+  }
+
+  function formatStartEndCs(startcs, endcs) {
+
+    return formatCs(startcs)  + " - " + formatCs(endcs) ;    
+  }
+
+  function formatStartEndCsWithLink(docId, startcs, endcs) {
+
+
+    return "<a class='timeRange' href='/correct?id=" + docId.replaceAll("-", "_") + "_" +
+                Math.floor(startcs / 100) + "' target='_blank'>" +             
+            formatStartEndCs(startcs, endcs) + 
+            " <img src='/static/images/play.png' border=0 height=16/></a>" ;
+
+/*
+
+
+    return "<a class='timeRange' href='https://nladom-test.nla.gov.au/" + docId + "/listen/0-" + 
+            Math.floor(startcs / 100) + "' target='_blank'>" +             
+            formatStartEndCs(startcs, endcs) + 
+            " <img src='/static/images/play.png' border=0 height=16/></a>" ;
+            */
+  }
+
+
+  function  formatCorrectId(docId, startcs) {
+
+    return "CORR" + docId.replace("-", "_") + "_" + Math.floor(startcs / 100) ;
+  }
+
+  let lastChunk = 0 ;
+  let lastContent = 0 ;
+  let lastSpeaker = -1 ;
+
+  function insertTranscriptContent(transcript, speakerLookup, startcs, endcs) {
+
+    let r = "" ;//"STUFF: from " + startcs + " to " + endcs + " transcript chunks: " + transcript.transcript.chunks.length  ;
+   
+    outer: for (let i=lastChunk;i<transcript.transcript.chunks.length;i++) {
+    //  r += " " +   i + " is " + JSON.stringify(transcript.transcript.chunks[i]) ;
+      if (lastChunk > i) lastContent = 0 ;
+      else lastChunk = i ;
+      let firstInChunk = true ;
+      let chunk = transcript.transcript.chunks[i] ;
+      for (let j=0;j<chunk.content.length;j++) {
+        let content = chunk.content[j] ;
+        lastContent = j ;
+        if (content.s < startcs) continue ;
+        if (content.s >= startcs) {
+          if (content.s > endcs) break outer;
+          if (firstInChunk) {
+            if (r.length > 0) r += "</div><br clear='all'>" ; // close spoken
+            if (lastSpeaker != chunk.speaker) {
+              r += "<div class='trspeaker'>" + speakerLookup["sp" + chunk.speaker] + ": </div>" ;
+              lastSpeaker = chunk.speaker ;
+            }
+            r += "<div class='trspoken'>" ;
+            firstInChunk = false ;
+          }
+          r += " " + content.t ;
+        }
+      }
+    }
+    if (r.length > 0) r += "</div><br clear='all'>" ; // close spoken
+    return r ;
+
+  }
+
+  function showLevelRecursive(transcript, speakerLookup, docId, outlines, levelNumber, startSeq, endSeq, summaryPrefix) {
+
+    lastSpeaker = -1 ; // force speaker output
+    let r = "<DIV>" ; // "<DIV class='indent'><B>Level " + levelNumber + "</B>" ;
+    let level = outlines[levelNumber] ;
+    for (let s = startSeq; s<=endSeq;s++) {
+      let seq = level.seqs[s] ;
+      let partName = "" ;
+      if (levelNumber == 0) partName = "Transcript" ;
+      //else partName = "Summary Part " + (outlines.length - levelNumber) + " - " + (s + 1) ;
+      else partName = "Summary Part " + summaryPrefix + (s + 1) ;
+      let toggleId = "l" + (outlines.length - levelNumber) + "s" + (s + 1) ;
+      let initialState = (levelNumber == (outlines.length - 1)) ? "Hide" : "Show" ;
+     
+
+      r += "<DIV class='indent'  style='margin-top:1em'><B>" + partName + "</B> " +
+             formatStartEndCsWithLink(docId, seq.startcs, seq.endcs) ;
+
+      r += '<button class="showHide" id="b' + toggleId + '">' +  initialState + '</button>' ;
+
+      r += "<DIV id='" + toggleId + "' class='" + ((initialState == 'Show') ? "hide" : "show") + 
+            "'  style='margin-top:0.5em" + 
+           ((levelNumber == 0) ? ";background-color:#f8f8f8;margin-left:2em;margin-right:2em;font-family:serif" : "") +
+           "'>" ;
+      if (levelNumber == 0) {
+        //r += "LOW LEVEL time=" + seq.startcs + " - " + seq.endcs + " xx " ;
+        r+= insertTranscriptContent(transcript, speakerLookup, seq.startcs, seq.endcs) ;
+      }
+      else r += seq.content.replaceAll("||", " ") ;
+
+      if (seq.hasOwnProperty("lowerLevelSourceStartSeq")) {
+        r += showLevelRecursive(transcript, speakerLookup, docId, outlines, levelNumber - 1, seq.lowerLevelSourceStartSeq, 
+          seq.lowerLevelSourceEndSeq, summaryPrefix + (s + 1 + " - ")) ;
+      }
+      if (levelNumber == 0) r+= " <BR clear='all'/><BUTTON class='correct' id='" + 
+            formatCorrectId(docId, seq.startcs) +
+            "'>Correct</BUTTON>" ;
+      r += "</DIV>" 
+
+
+      r+= "</DIV>"
+    }
+    
+    r += "</DIV>" ;
+    return r ;
+  }
+  %>
+  
+  <H3>Nested detailed summaries linked to full transcript
+    <button class="showHide" style='margin-left:1em' id="showAll">Show all</button>
+    <button class="showHide" style='margin-left:1em' id="hideAll">Hide all</button>
+    </H3>
+
+    <!--
+      doesnt work - security (which can fix with "Content-Security-Policy" content="default-src *;..")
+      and need cookie on request - think about doing this with a node pipe proxy endpoint - send req to our node
+      which proxies it with a cookie to tarkine?
+
+    <div style='float:right;width:33%;margin-top:-5em'>
+       <div style='margin-left:1em;border:1px solid #dddddd;padding:8px;font-size:90%'>
+        <B>Audio Player</B>
+        <BR/>
+        <audio controls>
+          <source src="https://nladom-test.nla.gov.au/tarkine/listen/download/<%=doc.id%>?copyRole=l2" type="audio/mpeg">
+        </audio>
+       </div>
+    </div>
+    -->
+
+
+  <% if (doc.outlines) { %>
+     <% let transcriptAsString = "" ;
+       for (let j of doc.transcriptJson) transcriptAsString += j ;
+       let transcript = JSON.parse(transcriptAsString) ;
+       let speakerLookup = [] ;
+       for (let sp of transcript.speakers) speakerLookup["sp" + sp.id] = sp.name ;
+     %>
+    
+     <%- showLevelRecursive(transcript, speakerLookup, doc.id, doc.outlines, doc.outlines.length - 1, 0, doc.outlines[doc.outlines.length - 1].seqs.length - 1, "") %> 
+  <% } %>
+
+</div>
+
+<%- include('../common/footer') ; -%>
