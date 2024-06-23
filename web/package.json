@@ -23,7 +23,7 @@
     "log4js": "^6.9.1",
     "moment": "^2.29.4",
     "morgan": "^1.10.0",
-    "pdf-text-reader": "^4.0.1",
+    "pdf-text-reader": "^5.1.0",
     "pdf2html": "^3.1.0",
     "rotating-file-stream": "^3.1.1",
     "solr-client": "^0.2.1",
