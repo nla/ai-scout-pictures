@@ -15,3 +15,8 @@ web/node_modules/
 web/service-log
 web/static/jquery*
 web/static/pics/*
+web/keywordSuppressedRun1.log
+web/llmScanCheckpoint.data
+web/wepagelog*
+web/*log
+web/nohup.out
