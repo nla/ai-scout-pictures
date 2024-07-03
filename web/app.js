@@ -56,7 +56,10 @@ const appConfig = {
 	port: process.env.PORT,
 	urlPrefix: process.env.URL_PREFIX,
 	textEmbeddingURL: process.env.CLIP_TEXT_EMBEDDING_URL,
-	picturesCore: process.env.SOLR_PICTURES_CORE
+	picturesCore: process.env.SOLR_PICTURES_CORE,
+	nsfwUrl: process.env.NSFW_URL,
+	llmUrl: process.env.LLM_URL,
+	inferenceEngine: process.env.INFERENCE_ENGINE
 } ;
 
 
@@ -87,7 +90,8 @@ app.set('view engine', 'ejs');
 
 app.use(appConfig.urlPrefix + '/',        require('./routes/home')		  .init(appConfig)) ;
 app.use(appConfig.urlPrefix + '/search',  require('./routes/search')	  .init(appConfig)) ;
-app.use(appConfig.urlPrefix + '/proxy',  require('./routes/proxyImage')	.init(appConfig)) ;
+app.use(appConfig.urlPrefix + '/proxy',		require('./routes/proxyImage').init(appConfig)) ;
+app.use(appConfig.urlPrefix + '/admin',		require('./routes/admin')			.init(appConfig)) ; // one day, authenticate
 
 //  -----  errors  -----
 

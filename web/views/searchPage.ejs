@@ -38,13 +38,35 @@
     <TABLE CELLSPACING="10">
       <TR><TH colspan='2'></TH><TH>NLA Metadata</TH><TH>openAI description</TH></TR>
     <% for (let doc of searchResults.response.docs) { %>
+
+        <%  
+          let decodedSus = null ;
+          if (doc.suppressed) 
+            switch (doc.suppressed) {
+              case 'I': decodedSus = "by NSFW image analysis" ; break ;
+              case 'K': decodedSus = "by keyword list" ; break ;
+              case 'L': decodedSus = "by LLM metadata analysis" ; break ;
+              default : decodedSus = "code " + doc.suppressed ;
+            }
+        %>
+
         <TR valign="top">
           <TD><%=r++%></TD>
           <TD>
-            <A href='<%=doc.id%>'><img src='<%- genImageSrc(doc.id) -%>' width=300 /></A>
-<!--
-            <A href='<%=doc.id%>'><img src='<%=doc.id.replace('https://nla.gov.au', '/static/pics').replace("/image", ".jpg").replace("/representativeImage", ".jpg")%>' width=300 /></A>
--->
+      
+            <A href='<%=doc.id%>' class='<%-(decodedSus) ? "suppressImage" : "showImage" -%>'><img src='<%- genImageSrc(doc.id) -%>' width=300 /></A>
+
+            <% if (decodedSus) { %>
+              <div>
+                <B>Image Suppressed</B><BR/>
+                <P>This image has been suppressed because some people may find it offensive.</P>
+                <P>Before deciding to view this image, you should read the image description and be aware
+                  that the content may offend.</P>
+                  <P>Consistent with its role as a national memory institution, 
+                  the NLA does not censor content.</P>
+                <button class="imageSuppressed">I understand - show me the image</button>
+              </div>
+            <% } %>
           </TD>
           <TD>
            <B><%= doc.title %></B> 
@@ -59,6 +81,10 @@
            <%- show("Image similarity", doc.imageSim.toFixed(4)) -%>
            <%- show("Metadata similarity", doc.metadataSim.toFixed(4)) -%>
            <%- show("openAi similarity", doc.openaiSim.toFixed(4)) -%>
+
+
+
+           <%- show("Suppressed", decodedSus) -%>
            
            <BR/><BR/><a href="/search?like=<%=doc.id%>">Similar images</a>
           </TD>

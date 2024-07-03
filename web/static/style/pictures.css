@@ -29,6 +29,9 @@ tr {vertical-align: top}
 .answer {margin-left:1em;margin-right:1em;max-width:50em}
 
 
+.showImage {display:block}
+.suppressImage {display:none}
+
 /* audio correction stylesheet */
 
 .chunk {

@@ -106,7 +106,7 @@ async function getLike(like, scalings) {
   "&wt=json&rows=100" +
   "&q=" + q + 
   "&q.op=AND" +
-  "&fl=id,title,author,format,originalDescription,notes,subjects,openAIDescription,url,bibId,score,imageVector,metadataVector,openaiDescriptionVector" ; // rm embedding
+  "&fl=id,title,author,format,originalDescription,notes,subjects,openAIDescription,url,bibId,score,imageVector,metadataVector,openaiDescriptionVector,suppressed" ; // rm embedding
 
   solrRes = null ;
   
@@ -199,7 +199,7 @@ async function getTextSearch(stxt, scalings) {
     "&q=" + query + 
     "&q.op=AND" +
     //"&facet=true&facet.field=set&facet.field=filename" +
-    "&fl=id,title,author,format,originalDescription,notes,subjects,openAIDescription,bibId,url,score,imageVector,metadataVector,openaiDescriptionVector" ; // rm embedding
+    "&fl=id,title,author,format,originalDescription,notes,subjects,openAIDescription,bibId,url,score,imageVector,metadataVector,openaiDescriptionVector,suppressed" ; // rm embedding
 
   console.log("ssearch query part: " + selectData.replaceAll(/\[[^\]]*\]/gi, "[..vectors..]").replaceAll(" OR ", "\n OR ")  + "\nurl: " + 
                 appConfig.solr.getSolrBaseUrl() + "pictures/select") ;
