@@ -17,6 +17,6 @@ web/static/jquery*
 web/static/pics/*
 web/keywordSuppressedRun1.log
 web/llmScanCheckpoint.data
-web/wepagelog*
+web/webpagelog*
 web/*log
 web/nohup.out
