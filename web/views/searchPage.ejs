@@ -36,7 +36,7 @@
     let r = 1 ; %>
     <H2>Found <%=searchResults.response.numFound%></H2>
     <TABLE CELLSPACING="10">
-      <TR><TH colspan='2'></TH><TH>NLA Metadata</TH><TH>openAI description</TH></TR>
+      <TR><TH colspan='2'></TH><TH>NLA Metadata</TH><TH>AI generated description</TH></TR>
     <% for (let doc of searchResults.response.docs) { %>
 
         <%  
@@ -46,6 +46,7 @@
               case 'I': decodedSus = "by NSFW image analysis" ; break ;
               case 'K': decodedSus = "by keyword list" ; break ;
               case 'L': decodedSus = "by LLM metadata analysis" ; break ;
+              case 'V': decodedSus = "by MSVision image analysis" ; break ;
               default : decodedSus = "code " + doc.suppressed ;
             }
         %>
@@ -59,7 +60,7 @@
             <% if (decodedSus) { %>
               <div>
                 <B>Image Suppressed</B><BR/>
-                <P>This image has been suppressed because some people may find it offensive.</P>
+                <P>This image has been suppressed because some people may find it distressing or offensive.</P>
                 <P>Before deciding to view this image, you should read the image description and be aware
                   that the content may offend.</P>
                   <P>Consistent with its role as a national memory institution, 
@@ -81,6 +82,7 @@
            <%- show("Image similarity", doc.imageSim.toFixed(4)) -%>
            <%- show("Metadata similarity", doc.metadataSim.toFixed(4)) -%>
            <%- show("openAi similarity", doc.openaiSim.toFixed(4)) -%>
+           <%- show("MSVision similarity", doc.msVisionSim.toFixed(4)) -%>
 
 
 
@@ -90,7 +92,14 @@
           </TD>
           <TD width="40%">
             
-            <%- show("", doc.openAIDescription || "-", true) -%>
+            <% if (doc.openAIDescription) { %>
+                 <%- show("", "openAI: " + doc.openAIDescription, true) -%>
+            <% } %>
+            <% if (doc.msVisionDescription) { %>
+                 <%- show("", "MS Vision: " + doc.msVisionDescription, true) -%>
+            <% } %>
+
+
           </TD>
         </TR>
     <% } %>

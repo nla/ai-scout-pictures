@@ -468,6 +468,9 @@
   <field name="openAIDescription" type="text_general" indexed="true" termOffsets="true" stored="true" uninvertible="false" termPositions="true" termVectors="true" multiValued="false"/>
   <field name="openAIDescriptionStemmed" type="text_en" indexed="true" termOffsets="true" stored="false" uninvertible="false" termPositions="true" termVectors="true" multiValued="false"/>
   <field name="openaiDescriptionVector" type="knn_vector" indexed="true" stored="true"/>
+  <field name="msVisionDescription" type="text_general" indexed="true" termOffsets="true" stored="true" uninvertible="false" termPositions="true" termVectors="true" multiValued="false"/>
+  <field name="msVisionDescriptionStemmed" type="text_en" indexed="true" termOffsets="true" stored="false" uninvertible="false" termPositions="true" termVectors="true" multiValued="false"/>
+  <field name="msVisionDescriptionVector" type="knn_vector" indexed="true" stored="true"/>
   <field name="originalDescription" type="text_general" indexed="true" termOffsets="true" stored="true" uninvertible="false" termPositions="true" termVectors="true" multiValued="false"/>
   <field name="originalDescriptionStemmed" type="text_en" indexed="true" termOffsets="true" stored="false" uninvertible="false" termPositions="true" termVectors="true" multiValued="false"/>
   <field name="subjects" type="text_general" indexed="true" termOffsets="true" stored="true" uninvertible="false" termPositions="true" termVectors="true" multiValued="false"/>
@@ -551,6 +554,7 @@
   <copyField source="notes" dest="metadataText"/>
   <copyField source="notes" dest="metadataTextStemmed"/>
   <copyField source="openAIDescription" dest="openAIDescriptionStemmed"/>
+  <copyField source="msVisionDescription" dest="msVisionDescriptionStemmed"/>
   <copyField source="originalDescription" dest="metadataText"/>
   <copyField source="originalDescription" dest="metadataTextStemmed"/>
   <copyField source="subjects" dest="metadataText"/>

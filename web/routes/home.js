@@ -45,7 +45,9 @@ async function index(req, res) {
     openAIKeyword: 0,
     imageEmbedding: 1,
     metadataEmbedding: 0,
-    openAIEmbedding: 0
+    openAIEmbedding: 0,
+    msVisionKeyword: 0.15,
+    msVisionEmbedding: 0.2
   } ;
 
   if (req.query) {
@@ -55,6 +57,8 @@ async function index(req, res) {
     if (req.query.imageEmbedding) scalings.imageEmbedding = req.query.imageEmbedding ;
     if (req.query.metadataEmbedding) scalings.metadataEmbedding = req.query.metadataEmbedding ;
     if (req.query.openAIEmbedding) scalings.openAIEmbedding = req.query.openAIEmbedding ;
+    if (req.query.msVisionKeyword) scalings.msVisionKeyword = req.query.msVisionKeyword ;
+    if (req.query.msVisionEmbedding) scalings.msVisionEmbedding = req.query.msVisionEmbedding ;
   }
 
   let err = null ;

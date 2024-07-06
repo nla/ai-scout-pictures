@@ -20,3 +20,5 @@ web/llmScanCheckpoint.data
 web/webpagelog*
 web/*log
 web/nohup.out
+web/visionGenLog*
+web/visionScanCheckpoint.data

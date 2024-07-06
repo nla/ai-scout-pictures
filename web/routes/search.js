@@ -24,7 +24,9 @@ async function search(req, res) {
     openAIKeyword: 0,
     imageEmbedding: 1,
     metadataEmbedding: 0,
-    openAIEmbedding: 0
+    openAIEmbedding: 0,
+    msVisionKeyword: 0.15,
+    msVisionEmbedding: 0.2
   } ;
 
   if (req.query) {
@@ -35,8 +37,10 @@ async function search(req, res) {
     if (req.query.imageEmbedding) scalings.imageEmbedding = req.query.imageEmbedding ;
     if (req.query.metadataEmbedding) scalings.metadataEmbedding = req.query.metadataEmbedding ;
     if (req.query.openAIEmbedding) scalings.openAIEmbedding = req.query.openAIEmbedding ;
+    if (req.query.msVisionKeyword) scalings.msVisionKeyword = req.query.msVisionKeyword ;
+    if (req.query.msVisionEmbedding) scalings.msVisionEmbedding = req.query.msVisionEmbedding ;
   }
-
+  //console.log("scalings2 " + JSON.stringify(scalings)) ;
   let err = null ;
   let searchResults = null ;
 
@@ -76,7 +80,7 @@ async function getLike(like, scalings) {
   "&wt=json&rows=1" +
   "&q=id:\"" + like + "\"" +
   "&q.op=AND" +
-  "&fl=id,imageVector,metadataVector,openaiDescriptionVector" ; 
+  "&fl=id,imageVector,metadataVector,openaiDescriptionVector,msVisionDescriptionVector" ; 
 
   console.log("like query" + selectData) ;
 
@@ -106,7 +110,7 @@ async function getLike(like, scalings) {
   "&wt=json&rows=100" +
   "&q=" + q + 
   "&q.op=AND" +
-  "&fl=id,title,author,format,originalDescription,notes,subjects,openAIDescription,url,bibId,score,imageVector,metadataVector,openaiDescriptionVector,suppressed" ; // rm embedding
+  "&fl=id,title,author,format,originalDescription,notes,subjects,openAIDescription,msVisionDescription,url,bibId,score,imageVector,metadataVector,openaiDescriptionVector,msVisionDescriptionVector,suppressed" ; // rm embedding
 
   solrRes = null ;
   
@@ -143,7 +147,12 @@ async function getLike(like, scalings) {
         doc.openaiSim = innerProduct(qEmb, doc.openaiDescriptionVector) ;
         delete doc["openaiDescriptionVector"] ;
       }
-      else doc.openaiSim = -100 ;    
+      else doc.openaiSim = -100 ;  
+      if (doc.msVisionDescriptionVector) {
+        doc.msVisionSim = innerProduct(qEmb, doc.msVisionDescriptionVector) ;
+        delete doc["msVisionDescriptionVector"] ;
+      }
+      else doc.msVisionSim = -100 ;    
     }
 
     return solrRes.data ;
@@ -168,6 +177,8 @@ async function getTextSearch(stxt, scalings) {
     clauses.push("({!knn f=metadataVector topK=50}" + JSON.stringify(qVec) + ")^" + scalings.metadataEmbedding) ;
   if (scalings.openAIEmbedding > 0) 
     clauses.push("({!knn f=openaiDescriptionVector topK=50}" + JSON.stringify(qVec) + ")^" + scalings.openAIEmbedding) ;
+  if (scalings.msVisionEmbedding > 0) 
+    clauses.push("({!knn f=msVisionDescriptionVector topK=50}" + JSON.stringify(qVec) + ")^" + scalings.msVisionEmbedding) ;
 
   if (scalings.metadataKeyword > 0) {
     clauses.push("title:(\"" + stxt + "\")^" + (scalings.metadataKeyword)) ;
@@ -180,6 +191,14 @@ async function getTextSearch(stxt, scalings) {
     //clauses.push("openAIDescriptionStemmed:(" + stxt + ")^" + (scalings.openAIKeyword / 4)) ; // didnt build this properly FIX TODO
     clauses.push("openAIDescription:(" + stxt + ")^" + (scalings.openAIKeyword / 4)) ;
   }
+
+  if (scalings.msVisionKeyword > 0) {
+    clauses.push("msVisionDescription:(\"" + stxt + "\")^" + (scalings.msVisionKeyword) / 2) ;
+    clauses.push("msVisionDescriptionStemmed:(" + stxt + ")^" + (scalings.msVisionKeyword / 4)) ; 
+    clauses.push("msVisionDescription:(" + stxt + ")^" + (scalings.msVisionKeyword / 4)) ;
+  }
+
+  
 
   if (clauses.length == 0) throw new Error("At least one scaling must be greater than zero!") ;
   let query = clauses.join(" OR ") ;
@@ -199,7 +218,7 @@ async function getTextSearch(stxt, scalings) {
     "&q=" + query + 
     "&q.op=AND" +
     //"&facet=true&facet.field=set&facet.field=filename" +
-    "&fl=id,title,author,format,originalDescription,notes,subjects,openAIDescription,bibId,url,score,imageVector,metadataVector,openaiDescriptionVector,suppressed" ; // rm embedding
+    "&fl=id,title,author,format,originalDescription,notes,subjects,openAIDescription,msVisionDescription,bibId,url,score,imageVector,metadataVector,openaiDescriptionVector,msVisionDescriptionVector,suppressed" ; // rm embedding
 
   console.log("ssearch query part: " + selectData.replaceAll(/\[[^\]]*\]/gi, "[..vectors..]").replaceAll(" OR ", "\n OR ")  + "\nurl: " + 
                 appConfig.solr.getSolrBaseUrl() + "pictures/select") ;
@@ -229,16 +248,24 @@ async function getTextSearch(stxt, scalings) {
         delete doc["imageVector"] ;
       }
       else doc.imageSim = -100 ; 
+
       if (doc.metadataVector) {
         doc.metadataSim = innerProduct(qEmb, doc.metadataVector) ;
         delete doc["metadataVector"] ;
       }  
       else doc.metadataSim = -100 ;    
+
       if (doc.openaiDescriptionVector) {
         doc.openaiSim = innerProduct(qEmb, doc.openaiDescriptionVector) ;
         delete doc["openaiDescriptionVector"] ;
       }
-      else doc.openaiSim = -100 ;    
+      else doc.openaiSim = -100 ;  
+
+      if (doc.msVisionDescriptionVector) {
+        doc.msVisionSim = innerProduct(qEmb, doc.msVisionDescriptionVector) ;
+        delete doc["msVisionDescriptionVector"] ;
+      }
+      else doc.msVisionSim = -100 ;    
     }
 
     console.log("GTS RET data " + solrRes.data.response.docs.length);

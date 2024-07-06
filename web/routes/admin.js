@@ -5,6 +5,7 @@ const util = require('../util/utils') ;
 const solr = require('../util/solr') ;
 const axios = require('axios') ;
 const fs = require('fs') ;
+const url = require("url") ;
 
 
 let appConfig = null ;
@@ -15,6 +16,7 @@ function init(appConfigParm) {
   router.get('/scanToSuppressUsingNSWF',		  async (req, res) => { scanToSuppressUsingNSWF(req, res) }) ;
   router.get('/scanToSuppressUsingKeywords',  async (req, res) => { scanToSuppressUsingKeywords(req, res) }) ;
   router.get('/scanToSuppressUsingLLM',       async (req, res) => { scanToSuppressUsingLLM(req, res) }) ;
+  router.get('/generateDescriptionAndnswfUsingMsVision',       async (req, res) => { generateDescriptionAndnswfUsingMsVision(req, res) }) ;
   return router ;  
 }
 
@@ -33,6 +35,131 @@ function genImageSrc(id) {
   return im.substring(0, i) + "/" + subDir + im.substring(i) ;
 
 }
+
+
+const VISION_SCAN_CHECKPOINT_FILENAME = "visionScanCheckpoint.data" ;
+
+async function generateDescriptionAndnswfUsingMsVision(req, res) {
+
+  let count = 0 ;
+  let suppressed = 0 ;
+  let newlySuppressed = 0 ;
+
+  try {
+
+    // try using the MicrosoftVision model to describe images and identify images which might be sus based on their metadata
+
+    let lastId = "" ;
+    if (fs.existsSync(VISION_SCAN_CHECKPOINT_FILENAME)) 
+      lastId = fs.readFileSync(VISION_SCAN_CHECKPOINT_FILENAME) ;
+
+    if (!lastId) lastId = 'a' ;
+    //lastId = 'a' ; // DEBUG
+    res.write("generateDescriptionAndnswfUsingMsVision starting from id: " + lastId + "\n") ;
+    console.log("generateDescriptionAndnswfUsingMsVision starting from id: " + lastId + "\n") ;
+
+    let solrRes = await axios.get(appConfig.solr.getSolrBaseUrl() + "pictures/select" +
+   // "?wt=json&rows=999&fl=id,url,title,suppressed,manuallyForcedUnsuppressed&sort=id asc&q=id:\"http://nla.gov.au/nla.obj-130766338/image\"") ;  // DEBUG
+
+       "?wt=json&rows=999999&fl=id,url,title,suppressed,manuallyForcedUnsuppressed&sort=id asc&q=id: {\"" + lastId + "\" TO \"z\"]") ; 
+
+    if (!((solrRes.status == 200) && solrRes.data &&  solrRes.data.response)) {
+      res.write(" Failed to find any records, status: " + solrRes.status + "\n") ;
+      if (solrRes.data) res.write(" Solr data: " + JSON.stringify(solrRes.data) + "\n") ;
+      res.end() ;
+      return ;
+    }
+    res.write(" Found: " + solrRes.data.response.numFound + "\n") ;
+
+    let docs = solrRes.data.response.docs ;
+    for (let doc of docs) {
+
+      res.write(" visionDesc on " + doc.id + "\n") ;
+      console.log(" visionDesc on " + doc.id + "\n") ;
+
+      let localCopyUrl = genImageSrc(doc.url) ;
+      let  msVisionResp = await getVisionDescriptionAndJudgement(localCopyUrl) ;
+    //  res.write("msVisionResp:" + msVisionResp + "//\n") ;
+
+      if (msVisionResp.description) {
+
+     //   console.log("about to get embedding..") ;
+        let clipEmbedding = await util.getEmbedding(msVisionResp.description) ;
+       // console.log("got embedding") ;
+
+        let updatedFields = {
+          msVisionDescription: msVisionResp.description,
+          msVisionDescriptionVector: setEmbeddingsAsFloats(clipEmbedding)
+        }
+        if (msVisionResp.nsfw == "NSFW") {
+          suppressed++ ;
+          console.log(" msVisionResp.nsfw =" + msVisionResp.nsfw  + " doc.suppressed " + doc.suppressed  + " doc.manuallyForcedUnsuppressed " + doc.manuallyForcedUnsuppressed) ;
+          if (!doc.suppressed && !doc.manuallyForcedUnsuppressed) {
+            updatedFields.suppressed = 'V' ; // vision!
+            newlySuppressed++ ;
+          }
+        }
+        res.write("updating " + doc.id ) ;
+        updateDoc(doc.id, updatedFields) ;
+      }
+      else res.write("no description generated for image") ;
+
+
+      count++ ;
+      if ((count % 100) == 0) {
+        res.write("checkpointing count " + suppressed + "/" + count + " newly sppressed: " + newlySuppressed + " id " + doc.id) ;
+        console.log("checkpointing count " + suppressed + "/" + count + " newly sppressed: " + newlySuppressed + " id " + doc.id) ;
+        fs.writeFileSync(VISION_SCAN_CHECKPOINT_FILENAME, doc.id) ;
+        //break ;// DEBUG
+      }
+      // if (count >= 101) break ;
+    }
+
+    //appConfig.llmUrl
+  }
+  catch (e) {
+    console.log("generateDescriptionAndnswfUsingMsVision err " + e) ;
+    res.write("generateDescriptionAndnswfUsingMsVision err " + e) ;
+    console.log(e.stack) ;
+  }
+  res.write("\ncount: " + count + " suppressed count:" + suppressed + " newly sppressed: " + newlySuppressed + "\n") ;
+  console.log("\generateDescriptionAndnswfUsingMsVision count: " + count + " suppressed count:" + suppressed + " newly sppressed: " + newlySuppressed  + "\n") ;
+  res.end() ;
+}
+
+function setEmbeddingsAsFloats(rawEmbedding) { // fixes a problem where embedding has to much precision and blows up SOLR
+ 
+  for (let k=0;k<rawEmbedding.length;k++)rawEmbedding[k] = Number(rawEmbedding[k]).toFixed(8) ;
+  return rawEmbedding ;
+}
+
+
+async function getVisionDescriptionAndJudgement(imageUrl) { 
+
+
+
+  console.log("off to vision with " + appConfig.visionUrl  + "?imageUrl=" + imageUrl) ;
+
+  try {
+    let eRes = await axios.get(appConfig.visionUrl  + "?imageUrl=" + imageUrl, // params,   
+      {         
+        headers: {'Content-Type': 'application/json'}
+      }  
+    ) ;
+    //console.log("back from get sum") ;
+    if (!eRes.status == 200) throw "Cant getVisionDescriptionAndJudgement, server returned http resp " + eRes.status ;
+
+   if (!eRes.data || !eRes.data) throw "Cant getLLMjudgement, server returned no data" ;
+   console.log("getVisionDescriptionAndJudgement ret " + JSON.stringify(eRes.data)) ;
+   return eRes.data ;
+  }
+  catch (e) {
+    console.log("Error in getVisionDescriptionAndJudgement: " +e) ;
+    return null ;
+  }
+}
+
+
 
 const LLM_SCAN_CHECKPOINT_FILENAME = "llmScanCheckpoint.data" ;
 
@@ -174,6 +301,7 @@ async function getLLMjudgement(metadata) {
 }
 
 
+
 async function scanToSuppressUsingKeywords(req, res) {
 
   let suppressed = 0 ;
@@ -285,8 +413,49 @@ async function scanToSuppressUsingNSWF(req, res) {
   res.end() ;
 }
 
+async function updateDoc(id, updatedFields) {
+
+  try {
+    let selectData = 
+      "wt=json&rows=1" +
+      "&q=id:\"" + encodeURIComponent(id) + "\"" +
+      "&fl=*" ;
+
+    let solrRes = null ;
+
+    solrRes = await axios.get(
+        appConfig.solr.getSolrBaseUrl() + "pictures/select?" + selectData) ;
+
+    if ((solrRes.status != 200) || !(solrRes.data && solrRes.data.response && solrRes.data.response.docs))
+      throw "SOLR updateDoc id " + id + " unexpected response: " + solrRes.status + " or nothing found" ;
+
+    let doc = solrRes.data.response.docs[0] ;
+
+    for (let fldName in updatedFields) {
+        let val = updatedFields[fldName] ;
+        if (val === null) delete doc[fldName] ;
+        else doc[fldName] = updatedFields[fldName] ;
+    }
+    
+    delete doc["_version_"] ;  // update/replace wont work with this!
+
+    console.log("about to update doc with id:" + id) ;
+    await solr.addOrReplaceDocuments(doc, "pictures") ;  // unique key is id
+    console.log("picture updateDoc done") ;
+  }
+  catch (e) {
+    console.log("error in updateDoc, id:" + id + ", err:" + e) ;
+    e.stack ;
+    throw e ;
+  }
+
+}
+
+
 async function setSuppressed(id, suppressedFlag) {
 
+  await updateDoc(id, {suppressed: suppressedFlag}) ;
+  /*
   try {
     let selectData = 
       "wt=json&rows=1" +
@@ -319,5 +488,6 @@ async function setSuppressed(id, suppressedFlag) {
     e.stack ;
     throw e ;
   }
+    */
 }
 module.exports.init = init ;

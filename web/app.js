@@ -58,6 +58,7 @@ const appConfig = {
 	textEmbeddingURL: process.env.CLIP_TEXT_EMBEDDING_URL,
 	picturesCore: process.env.SOLR_PICTURES_CORE,
 	nsfwUrl: process.env.NSFW_URL,
+	visionUrl: process.env.VISION_URL,
 	llmUrl: process.env.LLM_URL,
 	inferenceEngine: process.env.INFERENCE_ENGINE
 } ;

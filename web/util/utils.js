@@ -239,18 +239,35 @@ module.exports = {
 
 	getEmbedding: async function(str) {
 
-		const queryParams = {
-			text: str
-		} ;
-		const params = new url.URLSearchParams(queryParams);
+		let len = str.length ;
+		if (len > 320) {
+			str = str.substring(0, 320).trim() ;
+			len = str.length ;
+		}
+		while (true) {	// clip will err if str has too many tokens..
 
-		console.log("get embedding url " + appConfig.textEmbeddingURL + "?" + params) ;
-		let eRes = await axios.get(appConfig.textEmbeddingURL + "?" + params) ; 
-	
-		if (!eRes.status == 200) throw "Cant get embedding, embedding server returned http resp " + eRes.status ;
-		if (!eRes.data) throw "Cant get embedding, embedding server returned no data" ;
-		console.log("returned data: " + JSON.stringify(eRes.data).substring(0, 50) + "...") ;
-		return eRes.data ; // [x, y, ...]
+			try {
+				const queryParams = {
+					text: str
+				} ;
+				const params = new url.URLSearchParams(queryParams);
+
+				console.log("get embedding url " + appConfig.textEmbeddingURL + "?" + params) ;
+				let eRes = await axios.get(appConfig.textEmbeddingURL + "?" + params) ; 
+			
+				if (!eRes.status == 200) throw "Cant get embedding, embedding server returned http resp " + eRes.status ;
+				if (!eRes.data) throw "Cant get embedding, embedding server returned no data" ;
+				console.log("returned data: " + JSON.stringify(eRes.data).substring(0, 50) + "...") ;
+				return eRes.data ; // [x, y, ...]
+			}
+			catch (e) {
+				console.log("err getting clip embed, str length: " + len) ;
+				if (len < 120) throw e ;
+				str = str.substring(0, len - 20).trim() ;
+				len = str.length ;
+			}
+		}
 	}
+
 
 } ;

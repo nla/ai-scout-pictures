@@ -18,6 +18,12 @@
             <td><input type='range' name='metadataKeyword' min='0' max='1' step='0.025' value='<%=scalings.metadataKeyword%>'   style="margin-top:0em"             
               title='Relative boost of scores from finding keywords within NLA metadata'> </td>
           </tr>
+
+          <tr valign="top">
+            <td>MS Vision description keyword</td>
+            <td><input type='range' name='msVisionKeyword' min='0' max='1' step='0.025' value='<%=scalings.msVisionKeyword%>'   style="margin-top:0em"             
+              title='Relative boost of scores from finding keywords within the MS Vision generated description'> </td>
+          </tr>
           <tr valign="top">
             <td>openAI description keyword</td>
             <td><input type='range' name='openAIKeyword' min='0' max='1' step='0.025' value='<%=scalings.openAIKeyword%>'   style="margin-top:0em"             
@@ -29,6 +35,13 @@
             <td><input type='range' name='metadataEmbedding' min='0' max='1' step='0.025' value='<%=scalings.metadataEmbedding%>'   style="margin-top:0em"             
               title='Relative boost of scores from search text semantics matching the NLA metadata'> </td>
           </tr> 
+
+          <tr valign="top">
+            <td>MS Vision semantic similarity</td>
+            <td><input type='range' name='msVisionEmbedding' min='0' max='1' step='0.025' value='<%=scalings.msVisionEmbedding%>'   style="margin-top:0em"             
+              title='Relative boost of scores from search text semantics matching the MS Vision generated description'> </td>
+          </tr> 
+
           <tr valign="top">
             <td>openAI description semantic similarity</td>
             <td><input type='range' name='openAIEmbedding' min='0' max='1' step='0.025' value='<%=scalings.openAIEmbedding%>'   style="margin-top:0em"             
