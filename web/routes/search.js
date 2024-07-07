@@ -192,10 +192,10 @@ async function getTextSearch(stxt, scalings) {
     clauses.push("openAIDescription:(" + stxt + ")^" + (scalings.openAIKeyword / 4)) ;
   }
 
-  if (scalings.msVisionKeyword > 0) {
-    clauses.push("msVisionDescription:(\"" + stxt + "\")^" + (scalings.msVisionKeyword) / 2) ;
-    clauses.push("msVisionDescriptionStemmed:(" + stxt + ")^" + (scalings.msVisionKeyword / 4)) ; 
-    clauses.push("msVisionDescription:(" + stxt + ")^" + (scalings.msVisionKeyword / 4)) ;
+  if (scalings.msVisionKeyword > 0) { // msEmbeddings/descriptions seem to be higher scoring?!!?  Hence extra div by 3
+    clauses.push("msVisionDescription:(\"" + stxt + "\")^" + (scalings.msVisionKeyword) / 2 / 3 ) ;
+    clauses.push("msVisionDescriptionStemmed:(" + stxt + ")^" + (scalings.msVisionKeyword / 4 / 3)) ; 
+    clauses.push("msVisionDescription:(" + stxt + ")^" + (scalings.msVisionKeyword / 4 / 3)) ;
   }
 
   

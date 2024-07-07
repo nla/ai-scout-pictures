@@ -78,7 +78,7 @@ async function generateDescriptionAndnswfUsingMsVision(req, res) {
       console.log(" visionDesc on " + doc.id + "\n") ;
 
       let localCopyUrl = genImageSrc(doc.url) ;
-      let  msVisionResp = await getVisionDescriptionAndJudgement(localCopyUrl) ;
+      let  msVisionResp = await getVisionDescriptionAndJudgement(localCopyUrl, doc.title) ;
     //  res.write("msVisionResp:" + msVisionResp + "//\n") ;
 
       if (msVisionResp.description) {
@@ -88,7 +88,7 @@ async function generateDescriptionAndnswfUsingMsVision(req, res) {
        // console.log("got embedding") ;
 
         let updatedFields = {
-          msVisionDescription: msVisionResp.description,
+          msVisionDescription: "V12: " + msVisionResp.description,
           msVisionDescriptionVector: setEmbeddingsAsFloats(clipEmbedding)
         }
         if (msVisionResp.nsfw == "NSFW") {
@@ -134,18 +134,52 @@ function setEmbeddingsAsFloats(rawEmbedding) { // fixes a problem where embeddin
 }
 
 
-async function getVisionDescriptionAndJudgement(imageUrl) { 
+async function getVisionDescriptionAndJudgement(imageUrl, title) { 
 
 
+  //curl --header "Content-Type: application/json"  -G -X GET  
+  //   --data-urlencode 'imageUrl=https://hinton.nla.gov.au:5550/static/pics/995/nla.obj-131379995.jpg'
+  //   --data-urlencode 'optionalMetadata=Image title is "Fire engulfing the wing and engine of a replica aeroplane during an emergency training demonstration at the Aviation Rescue and Fire Fighting training area, Brisbane Airport, 30 June 2005". ' http://localhost:6688/describeAndNsfwImage
 
-  console.log("off to vision with " + appConfig.visionUrl  + "?imageUrl=" + imageUrl) ;
+  const queryParams = {
+    imageUrl: imageUrl
+  } ;
+  if (title) {
+    let t = title.trim() ;
+    if (t.startsWith('[')) t = t.substring(1) ;
+    let i = t.indexOf(']') ;
+    if (i > 0) t = t.substring(0, i) ;
+    i = t.indexOf('[') ;
+    if (i > 0) t = t.substring(0, i) ;
+    i = t.indexOf('/') ;
+    if (i > 0) t = t.substring(0, i) ;
+    t = t.replaceAll(/"/g, "").trim() ;
+    if (t.length > 120) t = t.substring(0, 120).trim() ;
+    if (t) {
+      queryParams.optionalMetadata = "Image title is \"" + t + "\". " ;
+    }
+  }
+  const params = new url.URLSearchParams(queryParams);
+
+  console.log("off to vision with " + appConfig.visionUrl + "?" + params) ;
+  let eRes = await axios.get(appConfig.textEmbeddingURL + "?" + params) ; 
 
   try {
+    /*
+     console.log("off to vision with " + appConfig.visionUrl  + "?imageUrl=" + imageUrl) ;
     let eRes = await axios.get(appConfig.visionUrl  + "?imageUrl=" + imageUrl, // params,   
       {         
         headers: {'Content-Type': 'application/json'}
       }  
     ) ;
+     */
+
+    let eRes = await axios.get(appConfig.visionUrl  + "?" + params,    
+      {         
+        headers: {'Content-Type': 'application/json'}
+      }  
+    ) ;
+
     //console.log("back from get sum") ;
     if (!eRes.status == 200) throw "Cant getVisionDescriptionAndJudgement, server returned http resp " + eRes.status ;
 
