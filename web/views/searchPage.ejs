@@ -93,10 +93,11 @@
           <TD width="40%">
             
             <% if (doc.openAIDescription) { %>
-                 <%- show("", "openAI: " + doc.openAIDescription, true) -%>
+                 <%- show("", "openAI: " + doc.openAIDescription + "<P/>", true) -%>
             <% } %>
             <% if (doc.msVisionDescription) { %>
-                 <%- show("", "MS Vision: " + doc.msVisionDescription, true) -%>
+                
+                 <%- show("", "MS Vision: " + doc.msVisionDescription , true) -%>
             <% } %>
 
 

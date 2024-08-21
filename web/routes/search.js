@@ -26,7 +26,7 @@ async function search(req, res) {
     metadataEmbedding: 0,
     openAIEmbedding: 0,
     msVisionKeyword: 0.15,
-    msVisionEmbedding: 0.2
+    msVisionEmbedding: 0
   } ;
 
   if (req.query) {

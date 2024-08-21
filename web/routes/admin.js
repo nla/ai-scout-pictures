@@ -61,8 +61,9 @@ async function generateDescriptionAndnswfUsingMsVision(req, res) {
     let solrRes = await axios.get(appConfig.solr.getSolrBaseUrl() + "pictures/select" +
    // "?wt=json&rows=999&fl=id,url,title,suppressed,manuallyForcedUnsuppressed&sort=id asc&q=id:\"http://nla.gov.au/nla.obj-130766338/image\"") ;  // DEBUG
 
-       "?wt=json&rows=999999&fl=id,url,title,suppressed,manuallyForcedUnsuppressed&sort=id asc&q=id: {\"" + lastId + "\" TO \"z\"]") ; 
-
+       // REAL WAS : "?wt=json&rows=999999&fl=id,url,title,suppressed,manuallyForcedUnsuppressed&sort=id asc&q=id: {\"" + lastId + "\" TO \"z\"]") ; 
+//fix up first run - those without v12 were not given title to help!
+       "?wt=json&rows=999999&fl=id,url,title,suppressed,manuallyForcedUnsuppressed&sort=id asc&q=-msVisionDescription:v12") ; 
     if (!((solrRes.status == 200) && solrRes.data &&  solrRes.data.response)) {
       res.write(" Failed to find any records, status: " + solrRes.status + "\n") ;
       if (solrRes.data) res.write(" Solr data: " + JSON.stringify(solrRes.data) + "\n") ;
