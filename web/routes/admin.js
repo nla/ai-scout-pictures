@@ -17,6 +17,8 @@ function init(appConfigParm) {
   router.get('/scanToSuppressUsingKeywords',  async (req, res) => { scanToSuppressUsingKeywords(req, res) }) ;
   router.get('/scanToSuppressUsingLLM',       async (req, res) => { scanToSuppressUsingLLM(req, res) }) ;
   router.get('/generateDescriptionAndnswfUsingMsVision',       async (req, res) => { generateDescriptionAndnswfUsingMsVision(req, res) }) ;
+  router.get('/generatePhi35DescriptionForOAimageDescriptions',       async (req, res) => { generatePhi35DescriptionForOAimageDescriptions(req, res) }) ;  
+  router.get('/comparePhi30And35Descriptions',       async (req, res) => { comparePhi30And35Descriptions(req, res) }) ;  
   return router ;  
 }
 
@@ -35,6 +37,142 @@ function genImageSrc(id) {
   return im.substring(0, i) + "/" + subDir + im.substring(i) ;
 
 }
+
+async function comparePhi30And35Descriptions(req, res) {
+
+  let count = 0 ;
+  let phi30Sim = 0 ;
+  let phi35Sim = 0 ;
+  let phiPhiSim = 0 ; 
+
+  try {
+
+    let solrRes = await axios.get(appConfig.solr.getSolrBaseUrl() + "pictures/select" +
+   // "?wt=json&rows=999&fl=id,url,title,suppressed,manuallyForcedUnsuppressed&sort=id asc&q=id:\"http://nla.gov.au/nla.obj-130766338/image\"") ;  // DEBUG
+
+
+       "?wt=json&rows=999999&fl=id,openaiDescriptionVector,msVisionDescriptionVector,msVision35DescriptionVector&sort=id asc&q=msVision35Description:* AND -suppressed:*") ; 
+    if (!((solrRes.status == 200) && solrRes.data &&  solrRes.data.response)) {
+      res.write(" Failed to find any records, status: " + solrRes.status + "\n") ;
+      if (solrRes.data) res.write(" Solr data: " + JSON.stringify(solrRes.data) + "\n") ;
+      res.end() ;
+      return ;
+    }
+    res.write(" Found: " + solrRes.data.response.numFound + "\n") ;
+
+    let docs = solrRes.data.response.docs ;
+    for (let doc of docs) {
+      let p3s = util.innerProduct(doc.openaiDescriptionVector, doc.msVisionDescriptionVector) ;
+      let p35s = util.innerProduct(doc.openaiDescriptionVector, doc.msVision35DescriptionVector) ;
+      let pps = util.innerProduct(doc.msVision35DescriptionVector, doc.msVisionDescriptionVector) ;
+      res.write(" visionDesc on " + doc.id + " p3s " + p3s + " p35s " + p35s + " pps " + pps + "\n") ;
+      phi30Sim += p3s ;
+      phi35Sim += p35s ;
+      phiPhiSim += pps ;
+      count++ ;
+    }
+
+  }
+  catch (e) {
+      console.log("comparePhi30And35Descriptions err " + e) ;
+      res.write("comparePhi30And35Descriptions err " + e) ;
+      console.log(e.stack) ;
+  }
+  res.write("\ncount: " + count + " phi30Sim av:" + (phi30Sim / count) + " phi35Sim av:" + (phi35Sim / count) +  " phiPhiSim av:" + (phiPhiSim / count) + "\n") ;
+  res.end() ;
+}
+
+const VISION35_SCAN_CHECKPOINT_FILENAME = "vision35ScanCheckpoint.data" ;
+
+async function generatePhi35DescriptionForOAimageDescriptions(req, res) {
+
+  let count = 0 ;
+  let suppressed = 0 ;
+  let newlySuppressed = 0 ;
+
+  try {
+
+    // try using the MicrosoftVision model to describe images and identify images which might be sus based on their metadata
+
+    let lastId = "" ;
+    if (fs.existsSync(VISION35_SCAN_CHECKPOINT_FILENAME)) 
+      lastId = fs.readFileSync(VISION35_SCAN_CHECKPOINT_FILENAME) ;
+
+    if (!lastId) lastId = 'a' ;
+    //lastId = 'a' ; // DEBUG
+    res.write("generatePhi35DescriptionForOAimageDescriptions starting from id: " + lastId + "\n") ;
+    console.log("generatePhi35DescriptionForOAimageDescriptions starting from id: " + lastId + "\n") ;
+
+    let solrRes = await axios.get(appConfig.solr.getSolrBaseUrl() + "pictures/select" +
+   // "?wt=json&rows=999&fl=id,url,title,suppressed,manuallyForcedUnsuppressed&sort=id asc&q=id:\"http://nla.gov.au/nla.obj-130766338/image\"") ;  // DEBUG
+
+       // REAL WAS : "?wt=json&rows=999999&fl=id,url,title,suppressed,manuallyForcedUnsuppressed&sort=id asc&q=id: {\"" + lastId + "\" TO \"z\"]") ; 
+//fix up first run - those without v12 were not given title to help!
+       "?wt=json&rows=999999&fl=id,url,title,suppressed,manuallyForcedUnsuppressed&sort=id asc&q=openAIDescription:* AND msVision35Description:*") ; 
+    if (!((solrRes.status == 200) && solrRes.data &&  solrRes.data.response)) {
+      res.write(" Failed to find any records, status: " + solrRes.status + "\n") ;
+      if (solrRes.data) res.write(" Solr data: " + JSON.stringify(solrRes.data) + "\n") ;
+      res.end() ;
+      return ;
+    }
+    res.write(" Found: " + solrRes.data.response.numFound + "\n") ;
+
+    let docs = solrRes.data.response.docs ;
+    for (let doc of docs) {
+
+      res.write(" visionDesc on " + doc.id + "\n") ;
+      console.log(" visionDesc on " + doc.id + "\n") ;
+
+      let localCopyUrl = genImageSrc(doc.url) ;
+      let  msVisionResp = await getVisionDescriptionAndJudgement(localCopyUrl, doc.title) ;
+    //  res.write("msVisionResp:" + msVisionResp + "//\n") ;
+
+      if (msVisionResp.description) {
+
+     //   console.log("about to get embedding..") ;
+        let clipEmbedding = await util.getEmbedding(msVisionResp.description) ;
+       // console.log("got embedding") ;
+
+        let updatedFields = {
+          msVision35Description: msVisionResp.description,
+          msVision35DescriptionVector: setEmbeddingsAsFloats(clipEmbedding)
+        }
+        if (msVisionResp.nsfw == "NSFW") {
+          suppressed++ ;
+          console.log(" msVisionResp.nsfw =" + msVisionResp.nsfw  + " doc.suppressed " + doc.suppressed  + " doc.manuallyForcedUnsuppressed " + doc.manuallyForcedUnsuppressed) ;
+          if (!doc.suppressed && !doc.manuallyForcedUnsuppressed) {
+            updatedFields.suppressed = 'V' ; // vision!
+            newlySuppressed++ ;
+          }
+        }
+        res.write("updating " + doc.id ) ;
+        updateDoc(doc.id, updatedFields) ;
+      }
+      else res.write("no description generated for image") ;
+
+
+      count++ ;
+      if ((count % 100) == 0) {
+        res.write("checkpointing count " + suppressed + "/" + count + " newly sppressed: " + newlySuppressed + " id " + doc.id) ;
+        console.log("checkpointing count " + suppressed + "/" + count + " newly sppressed: " + newlySuppressed + " id " + doc.id) ;
+        fs.writeFileSync(VISION35_SCAN_CHECKPOINT_FILENAME, doc.id) ;
+        //break ;// DEBUG
+      }
+      // if (count >= 101) break ;
+    }
+
+    //appConfig.llmUrl
+  }
+  catch (e) {
+    console.log("generatePhi35DescriptionForOAimageDescriptions err " + e) ;
+    res.write("generatePhi35DescriptionForOAimageDescriptions err " + e) ;
+    console.log(e.stack) ;
+  }
+  res.write("\ncount: " + count + " suppressed count:" + suppressed + " newly sppressed: " + newlySuppressed + "\n") ;
+  console.log("\generatePhi35DescriptionForOAimageDescriptions count: " + count + " suppressed count:" + suppressed + " newly sppressed: " + newlySuppressed  + "\n") ;
+  res.end() ;
+}
+
 
 
 const VISION_SCAN_CHECKPOINT_FILENAME = "visionScanCheckpoint.data" ;
