@@ -25,3 +25,7 @@ web/visionScanCheckpoint.data
 web/vision35GenLog1
 web/vision35GenLog2
 web/vision35ScanCheckpoint.data
+copyright-check-Francis-set-suppressed-ignored.csv
+web/package-lock.json
+web/package.json
+
