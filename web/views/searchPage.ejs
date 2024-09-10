@@ -93,7 +93,7 @@
           <TD width="40%">
             
             <% if (doc.openAIDescription) { %>
-                 <%- show("", "openAI: " + doc.openAIDescription + "<P/>", true) -%>
+                 <%- show("", "openAI: " + doc.openAIDescription.replaceAll("\n", "<BR/>") + "<P/>", true) -%>
             <% } %>
             <% if (doc.msVisionDescription) { %>
                 
