@@ -6,6 +6,8 @@ const solr = require('../util/solr') ;
 const axios = require('axios') ;
 const fs = require('fs') ;
 const url = require("url") ;
+const { OpenAI } = require('openai');
+
 
 
 let appConfig = null ;
@@ -16,9 +18,12 @@ function init(appConfigParm) {
   router.get('/scanToSuppressUsingNSWF',		  async (req, res) => { scanToSuppressUsingNSWF(req, res) }) ;
   router.get('/scanToSuppressUsingKeywords',  async (req, res) => { scanToSuppressUsingKeywords(req, res) }) ;
   router.get('/scanToSuppressUsingLLM',       async (req, res) => { scanToSuppressUsingLLM(req, res) }) ;
+  router.get('/comparePhi30And35Descriptions',async (req, res) => { comparePhi30And35Descriptions(req, res) }) ;  
   router.get('/generateDescriptionAndnswfUsingMsVision',       async (req, res) => { generateDescriptionAndnswfUsingMsVision(req, res) }) ;
-  router.get('/generatePhi35DescriptionForOAimageDescriptions',       async (req, res) => { generatePhi35DescriptionForOAimageDescriptions(req, res) }) ;  
-  router.get('/comparePhi30And35Descriptions',       async (req, res) => { comparePhi30And35Descriptions(req, res) }) ;  
+  router.get('/generatePhi35DescriptionForOAimageDescriptions',async (req, res) => { generatePhi35DescriptionForOAimageDescriptions(req, res) }) ; 
+  router.get('/checkCopyrightByBibidForOpenAIImages',          async (req, res) => { checkCopyrightByBibidForOpenAIImages(req, res) }) ;
+  router.get('/findExtraImagesForEvaluationSet',               async (req, res) => { findExtraImagesForEvaluationSet(req, res) }) ; 
+  router.get('/addOpenAIDescriptions',       async (req, res) => { addOpenAIDescriptions(req, res) }) ; 
   return router ;  
 }
 
@@ -80,6 +85,265 @@ async function comparePhi30And35Descriptions(req, res) {
   }
   res.write("\ncount: " + count + " phi30Sim av:" + (phi30Sim / count) + " phi35Sim av:" + (phi35Sim / count) +  " phiPhiSim av:" + (phiPhiSim / count) + "\n") ;
   res.end() ;
+}
+
+async function addOpenAIDescriptions(req, res) {
+
+  /* find everything with "processingStatus":"pending openAI description"
+      - it may already have an openai description - I made a mistake not setting this flag on them, so if found,
+        remove processingStatus and ignore
+      - it may be missed copyright: "Out of Copyright" - again, my mistake as we know this is the copyright status, 
+        so remember to add it
+      - get description from openAI, passing the title, exactly as Francis did, and update, removing processingStatus field
+         (and adding copyright if I forgot it!)
+   */
+
+   let apiKey = req.query.apiKey ;
+
+   const openai = new OpenAI({
+    apiKey: apiKey
+  });
+
+
+
+   let count = 0 ;
+   let alreadyGotDesc = 0 ;
+   let descAdded = 0 ;
+
+   let solrRes = await axios.get(appConfig.solr.getSolrBaseUrl() + "pictures/select" +
+     "?wt=json&rows=9999&fl=id,url,title,bibId,processingStatus,openAIDescription,copyright" +
+     "&q=processingStatus:\"pending openAI description\"") ;
+ 
+    if (!((solrRes.status == 200) && solrRes.data &&  solrRes.data.response)) {
+      res.write(" Failed to find any records, status: " + solrRes.status + "\n") ;
+      if (solrRes.data) res.write(" Solr data: " + JSON.stringify(solrRes.data) + "\n") ;
+      res.end() ;
+      return ;
+    }
+    res.write(" Found: " + solrRes.data.response.numFound + "\n") ;
+
+    let docs = solrRes.data.response.docs ;
+    for (let doc of docs) {
+      count++ ;
+      console.log("got doc " + count + " id: " + doc.id + " title " + doc.title) ;
+      if (doc.openAIDescription) {
+        alreadyGotDesc++ ;
+        res.write("doc " + doc.id + " already have description\n") ;
+        let updatedFields = {
+          processingStatus: null
+        } ;
+        await updateDoc(doc.id, updatedFields) ;
+        continue ;
+      }
+
+      let instructions = "Please describe this image." ;
+      if (doc.title) instructions += " For reference, this is the title of the image: " + doc.title.replace("[picture]", "") ;
+          
+      const completion = await openai.chat.completions.create({
+        model:"gpt-4o",
+        messages:[
+          {"role": "user", "content": [
+              {"type": "text", "text": instructions},
+              {"type": "image_url", "image_url": {"url": doc.id + "?WID=1024"}},
+          ]
+          }
+        ],
+        max_tokens:1000}) ;
+
+        console.log("COMPLETION " + JSON.stringify(completion)) ;
+
+      let openAIDescription =  completion.choices[0].message.content ;
+      
+
+      res.write("doc " + doc.id + " openAIDescription: " + openAIDescription + "\n") ;
+      let openaiDescriptionVector = await util.getEmbedding(openAIDescription) ;
+      // console.log("got embedding") ;
+
+       let updatedFields = {
+         processingStatus: null,
+         openAIDescription: openAIDescription,
+         openaiDescriptionVector: setEmbeddingsAsFloats(openaiDescriptionVector)
+       } ;
+       if (!doc.copyright) // fix bug
+        updatedFields.copyright = "Out of Copyright" ;
+
+       await updateDoc(doc.id, updatedFields) ;
+       descAdded++ ;  
+             
+      }
+
+      res.write("\n done count " + count + " alreadyGotDesc " + alreadyGotDesc + " descAdded " + descAdded) ;
+      console.log("\n done count " + count + " alreadyGotDesc " + alreadyGotDesc + " descAdded " + descAdded) ;
+
+}
+
+async function findExtraImagesForEvaluationSet(req,res) {
+
+  // Francis initially found 5000 images and got openAI generated descriptions for most of them.  This was about enough
+  // for an image search evaluation for his presentation at NFSA, but then things got wierd...
+  // We removed (suppressed) NSFW and ICIP images as best we could (a few hundred images removed from the set).
+  // Then someone for some reason thought we shouldnt have any copyrighted images in the set, even though the evaluation
+  // was internal to NLA.  This removed about half..
+  // SO, this process is to find about 3500 images that we havent yet asked openAI about, and that are not in
+  // copyright (according to the copyright tool) and of course, not suppressed.
+
+  // first, find images on blacklight from possible decades (before the 1950s should be mostly safe, but who knows..)
+
+
+  let blacklightRes = await axios.get("http://trv-solr-tst-1.nla.gov.au:10002/solr/blacklight/select?" + 
+    "wt=json&rows=9999&fl=id%2Ctitle_tsim%2Cthumbnail_path_ss" +
+    "&q.op=AND&q=format%3APicture%20AND%20(decade_isim%3A%5B1870%20TO%201940%5D)%20AND%20" +
+        "-decade_isim%3A1950%20AND%20-decade_isim%3A1960%20AND%20" +
+        "access_ssim%3A%22National%20Library%20(digitised%20item)%22") ;
+
+  if (!((blacklightRes.status == 200) && blacklightRes.data &&  blacklightRes.data.response)) {
+    res.write(" Failed to find any blacklightRes records, status: " + blacklightRes.status + "\n") ;
+    if (blacklightRes.data) res.write(" Solr data: " + JSON.stringify(blacklightRes.data) + "\n") ;
+    res.end() ;
+    return ;
+  }
+  res.write(" Found: " + blacklightRes.data.response.numFound + "\n") ;
+
+  let blacklightDocs = blacklightRes.data.response.docs ;
+
+  let blCount = 0 ;
+  let notFound = 0 ;
+  let alreadySuppressed = 0 ;
+  let badCopyright = 0 ;
+  let acceptedCount = 0 ;
+
+  for (let blDoc of blacklightDocs) {
+    blCount++ ;
+    console.log("blCount " + blCount + " blDoc: " + JSON.stringify(blDoc)) ;
+    let c = await getCopyightStatus(res, blDoc.id) ;
+    console.log("  bib " + blDoc.id + " copyright status: " + c) ;
+    if (c != "Out of Copyright") {
+      badCopyright++ ;
+      continue ;
+    }
+
+    // check we have doc, that it doesnt already have an openAI desc, and that it isnt suppressed
+
+    let solrRes = null ;
+    try {
+      let selectData = 
+        "wt=json&rows=1" +
+        "&q=bibId:\"" + encodeURIComponent(blDoc.id) + "\"" +
+        "&fl=id,suppressed,bibId" ;  // darn, forgot to get openAIDescription and check it didnt exist...
+
+      let solrRes = null ;
+
+      solrRes = await axios.get(
+          appConfig.solr.getSolrBaseUrl() + "pictures/select?" + selectData) ;
+
+      if ((solrRes.status != 200) || !(solrRes.data && solrRes.data.response && solrRes.data.response.docs) || 
+          (solrRes.data.response.docs.length != 1)) {
+        console.log("doc not found or unexpected response " + solrRes.status) ;
+        notFound++ ;
+        continue ;
+      }
+
+      let doc = solrRes.data.response.docs[0] ;
+      if (doc.suppressed) {
+        console.log("sadly, doc already suppressed in picture index " + doc.suppresed) ;
+        alreadySuppressed++ ;
+        continue ;
+      }
+
+      // ok - we keep this one   DARN!! should have updated copyright: "Out of Copyright" - do this later!!
+ 
+      let updatedFields = {
+        processingStatus: "pending openAI description" 
+      }
+
+      //res.write("updating " + doc.id ) ;
+      await updateDoc(doc.id, updatedFields) ;
+      if (acceptedCount++ >= 3500) break ;
+    }
+    catch (e) {
+      console.log("Error in findExtraImagesForEvaluationSet " + e) ;
+      throw e ;
+    }
+  }
+
+  res.write("\nblCount " + blCount + " notFound " + notFound + " alreadySuppressed " + alreadySuppressed +
+              " badCopyright " + badCopyright + " acceptedCount " + acceptedCount) ;
+  res.end() ;
+  console.log("blCount " + blCount + " notFound " + notFound + " alreadySuppressed " + alreadySuppressed +
+    " badCopyright " + badCopyright + " acceptedCount " + acceptedCount) ;
+}
+
+async function checkCopyrightByBibidForOpenAIImages(req, res) {
+
+  let count = 0 ;
+  let outOfCopyright = 0 ;
+  let inCopyright = 0 ;
+
+  let solrRes = await axios.get(appConfig.solr.getSolrBaseUrl() + "pictures/select" +
+      "?wt=json&rows=999999&fl=id,url,title,bibId&sort=id asc&q=openAIDescription:* AND -suppressed:* AND -bibId:\"\" " + 
+        "AND -openAIDescription:(\"No preview available\") AND " +
+        "-openAIDescription:(\"I can't provide assistance with that request\")"
+    ) ; 
+   if (!((solrRes.status == 200) && solrRes.data &&  solrRes.data.response)) {
+     res.write(" Failed to find any records, status: " + solrRes.status + "\n") ;
+     if (solrRes.data) res.write(" Solr data: " + JSON.stringify(solrRes.data) + "\n") ;
+     res.end() ;
+     return ;
+   }
+   res.write(" Found: " + solrRes.data.response.numFound + "\n") ;
+
+   let docs = solrRes.data.response.docs ;
+   for (let doc of docs) {
+    count++ ;
+    console.log("doc: " + JSON.stringify(doc)) ;
+    let c = await getCopyightStatus(res, doc.bibId) ;
+    res.write("" + count + "," + doc.bibId + "," + doc.id + "," + c + "\n") ;
+    if (c == "Out of Copyright") outOfCopyright++ ;
+    else inCopyright++ ;
+
+    // update record 
+ 
+    let updatedFields = {
+      copyright: c
+    }
+
+    //res.write("updating " + doc.id ) ;
+    await updateDoc(doc.id, updatedFields) ;
+
+   }
+
+   res.write("\nCount " + count + " outOfCopyright " + outOfCopyright + " inCopyright " + inCopyright) ;
+   res.end() ;
+   console.log("Count " + count + " outOfCopyright " + outOfCopyright + " inCopyright " + inCopyright) ;  
+}
+
+async function getCopyightStatus(res, bibId) {
+
+  for (let retry=0;retry<3;retry++){  // seems to get over-wrought..
+
+    try {
+      console.log("Checking //" + bibId + "//" + url + " https://soa.nla.gov.au/apps/v1/copyrightstatus/" + bibId) ;
+      let eRes = await axios.get("https://soa.nla.gov.au/apps/v1/copyrightstatus/" + bibId) ; 
+
+      if (!eRes.status == 200) throw "Cant getCopyightStatus, server returned http resp " + eRes.status ;
+      if (!eRes.data) throw "Cant getCopyightStatus, server returned no data" ;
+      console.log(bibId + " returned data: " + eRes.data) ;
+      let i = eRes.data.indexOf("<copyrightStatus>") ;
+      if (i < 0) throw ("No copyrightStatus!?") ;
+      let j = eRes.data.indexOf("</copyrightStatus>", i+17) ;
+
+      return eRes.data.substring(i+17, j) ;
+    }
+    catch (e) {
+      console.log("err getCopyightStatus bibId: " + bibId + " err " + e) ;
+      if (retry == 2) throw e ;
+      else {
+        console.log("retrying " + retry) ;
+        await new Promise(resolve => setTimeout(resolve, 1000)) ;  // wait a sec..
+      }
+    }
+  }
+  throw "crazy" ;
 }
 
 const VISION35_SCAN_CHECKPOINT_FILENAME = "vision35ScanCheckpoint.data" ;
@@ -146,7 +410,7 @@ async function generatePhi35DescriptionForOAimageDescriptions(req, res) {
           }
         }
         res.write("updating " + doc.id ) ;
-        updateDoc(doc.id, updatedFields) ;
+        await updateDoc(doc.id, updatedFields) ;
       }
       else res.write("no description generated for image") ;
 
@@ -239,7 +503,7 @@ async function generateDescriptionAndnswfUsingMsVision(req, res) {
           }
         }
         res.write("updating " + doc.id ) ;
-        updateDoc(doc.id, updatedFields) ;
+        await updateDoc(doc.id, updatedFields) ;
       }
       else res.write("no description generated for image") ;
 
