@@ -109,6 +109,7 @@ async function addOpenAIDescriptions(req, res) {
    let count = 0 ;
    let alreadyGotDesc = 0 ;
    let descAdded = 0 ;
+   let errors = 0 ;
 
    let solrRes = await axios.get(appConfig.solr.getSolrBaseUrl() + "pictures/select" +
      "?wt=json&rows=9999&fl=id,url,title,bibId,processingStatus,openAIDescription,copyright" +
@@ -139,6 +140,8 @@ async function addOpenAIDescriptions(req, res) {
       let instructions = "Please describe this image." ;
       if (doc.title) instructions += " For reference, this is the title of the image: " + doc.title.replace("[picture]", "") ;
           
+      let openAIDescription = null ;
+      try {
       const completion = await openai.chat.completions.create({
         model:"gpt-4o",
         messages:[
@@ -152,10 +155,28 @@ async function addOpenAIDescriptions(req, res) {
 
         console.log("COMPLETION " + JSON.stringify(completion)) ;
 
-      let openAIDescription =  completion.choices[0].message.content ;
+        openAIDescription =  completion.choices[0].message.content ;
+      }
+      catch (oe) {
+
+        res.write("openAIDescription Error " + oe + "\n") ;
+        console.log("openAIDescription Error " + oe) ;
+        console.log(oe.stack) ;
+      }
       
 
       res.write("doc " + doc.id + " openAIDescription: " + openAIDescription + "\n") ;
+
+      if (!openAIDescription) { // error...
+        let updatedFields = {
+          processingStatus: "error getting openAIdescr"
+        } ;
+        if (!doc.copyright) // fix bug
+         updatedFields.copyright = "Out of Copyright" ;
+         await updateDoc(doc.id, updatedFields) ;
+         errors++ ;
+         continue ;
+      }
       let openaiDescriptionVector = await util.getEmbedding(openAIDescription) ;
       // console.log("got embedding") ;
 
@@ -172,8 +193,8 @@ async function addOpenAIDescriptions(req, res) {
              
       }
 
-      res.write("\n done count " + count + " alreadyGotDesc " + alreadyGotDesc + " descAdded " + descAdded) ;
-      console.log("\n done count " + count + " alreadyGotDesc " + alreadyGotDesc + " descAdded " + descAdded) ;
+      res.write("\n done count " + count + " alreadyGotDesc " + alreadyGotDesc + " descAdded " + descAdded + " errors " + errors) ;
+      console.log("\n done count " + count + " alreadyGotDesc " + alreadyGotDesc + " descAdded " + descAdded + " errors " + errors) ;
 
 }
 
@@ -372,7 +393,8 @@ async function generatePhi35DescriptionForOAimageDescriptions(req, res) {
 
        // REAL WAS : "?wt=json&rows=999999&fl=id,url,title,suppressed,manuallyForcedUnsuppressed&sort=id asc&q=id: {\"" + lastId + "\" TO \"z\"]") ; 
 //fix up first run - those without v12 were not given title to help!
-       "?wt=json&rows=999999&fl=id,url,title,suppressed,manuallyForcedUnsuppressed&sort=id asc&q=openAIDescription:* AND msVision35Description:*") ; 
+// another run - gen for those with no vision35 yet 11sep24
+       "?wt=json&rows=999999&fl=id,url,title,suppressed,manuallyForcedUnsuppressed&sort=id asc&q=openAIDescription:* AND -msVision35Description:*") ; 
     if (!((solrRes.status == 200) && solrRes.data &&  solrRes.data.response)) {
       res.write(" Failed to find any records, status: " + solrRes.status + "\n") ;
       if (solrRes.data) res.write(" Solr data: " + JSON.stringify(solrRes.data) + "\n") ;
